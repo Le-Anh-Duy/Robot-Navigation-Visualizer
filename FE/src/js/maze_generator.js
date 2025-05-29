@@ -1,5 +1,5 @@
 export const MazeGenerator = (() => {
-    function generate(rows, cols) {
+    function generate(rows, cols, allowCyclicPaths = false) {
         const totalCells = rows * cols;
         const adj = Array.from({ length: totalCells }, () => new Set());
         const visited = Array(totalCells).fill(false);
@@ -63,6 +63,36 @@ export const MazeGenerator = (() => {
                     }
                 }
                 if (!foundNewStart) break; // All visited
+            }
+        }
+
+        if (allowCyclicPaths) {
+            console.log("Adding cyclic paths to the maze...");
+
+            let numCyclic = Math.floor(totalCells * 0.2); // Allow 20% of cells to have cyclic paths
+            for (let i = 0; i < numCyclic; i++) {
+                const cell = Math.floor(Math.random() * totalCells);
+                const r = Math.floor(cell / cols);
+                const c = cell % cols;
+                const neighbors = [];
+                // Check all 4 directions for potential cyclic paths
+                for (let j = 0; j < 4; j++) {
+                    const nr = r + dr[j];
+                    const nc = c + dc[j];
+                    if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
+                        const neighborCell = nr * cols + nc;
+                        if (visited[neighborCell] && neighborCell !== cell) {
+                            neighbors.push(neighborCell);
+                        }
+                    }
+                }
+                if (neighbors.length > 0) {
+                    const nextCell = neighbors[Math.floor(Math.random() * neighbors.length)];
+                    // Add a cyclic path
+                    adj[cell].add(nextCell);
+                    adj[nextCell].add(cell);
+                    console.log(`Cyclic path added between cell ${cell} and ${nextCell}`);
+                }
             }
         }
 

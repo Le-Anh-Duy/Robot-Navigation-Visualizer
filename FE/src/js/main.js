@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const statusDiv = document.getElementById('status');
     const animationSpeedSlider = document.getElementById('animationSpeed');
     const speedValueSpan = document.getElementById('speedValue');
-    
+    const allowCyclicPathsCheckbox = document.getElementById('allowCyclicPaths');
 
     
 
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         statusDiv.textContent = "Generating maze...";
         setTimeout(() => {
-            currentMaze = MazeGenerator.generate(rows, cols);
+            currentMaze = MazeGenerator.generate(rows, cols, allowCyclicPathsCheckbox.checked);
             MazeRenderer.adjustCanvasSize(); // Adjust size once
             MazeRenderer.loadMazeData(currentMaze); // This calls resetAndDrawBaseMaze
             updateUIForNewMaze();
