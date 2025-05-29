@@ -1,0 +1,173 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    display: flex;
+    flex-grow: 1;
+    padding: 10px;
+    gap: 10px;
+}
+
+.controls {
+    width: 350px;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.controls h1 {
+    text-align: center;
+    color: #333;
+    margin-top: 0;
+}
+
+.controls fieldset {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+.controls legend {
+    font-weight: bold;
+    color: #555;
+}
+
+.controls div {
+    margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+}
+
+.controls label {
+    /* flex-basis: 120px; */
+    margin-right: 5px;
+}
+
+.controls input[type="number"],
+.controls select,
+.controls input[type="file"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    /* flex-grow: 1; */
+    box-sizing: border-box;
+}
+.controls input[type="number"]{
+    width: 60px;
+}
+
+
+.controls button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    flex-grow: 1; /* Allow buttons to take available space in flex container */
+}
+.controls button:hover {
+    background-color: #0056b3;
+}
+.controls button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+#status {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    font-size: 0.9em;
+    border: 1px solid #ced4da;
+}
+
+.maze-area {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    padding: 10px;
+}
+
+#mazeCanvas {
+    border: 1px solid #000;
+    max-width: 100%;
+    max-height: 100%;
+    /* Ensure canvas scaling doesn't blur pixels for sharp lines */
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #333;
+    color: #f0f0f0;
+    font-size: 0.8em;
+}
+footer p {
+    margin: 2px 0;
+}
+
+.info-text {
+    font-size: 0.8em;
+    color: #007bff;
+    width: 100%;
+}
+/* Add to existing css/style.css */
+.controls label.inline {
+    flex-basis: auto; /* Allow label and input to be on same line more easily */
+    margin-right: 10px;
+}
+.controls input[type="range"] {
+    flex-grow: 1;
+    margin-left: 5px;
+}
+.mode-controls {
+    padding: 8px;
+    border: 1px dashed #ccc;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+}
+.mode-controls small {
+    display: block;
+    font-size: 0.8em;
+    color: #555;
+}
+#dirtyCellModeStatus.active {
+    color: green;
+    font-weight: bold;
+}
+/* Add to existing css/style.css */
+.controls label.inline {
+    flex-basis: auto; /* Allow label and input to be on same line more easily */
+    margin-right: 10px;
+}
+.controls input[type="range"] {
+    flex-grow: 1;
+    margin-left: 5px;
+}

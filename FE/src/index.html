@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maze Solver</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="controls">
+            <h1>Maze Solver</h1>
+
+            <fieldset>
+                <legend>Maze Setup</legend>
+                <div>
+                    <label for="rows">Rows:</label>
+                    <input type="number" id="rows" value="15" min="5" max="50">
+                </div>
+                <div>
+                    <label for="cols">Cols:</label>
+                    <input type="number" id="cols" value="15" min="5" max="50">
+                </div>
+                <button id="generateMaze">Generate Maze</button>
+                <hr>
+                <div>
+                    <label for="mazeFile">Load Maze (.txt):</label>
+                    <input type="file" id="mazeFile" accept=".txt">
+                </div>
+                <button id="downloadMaze" disabled>Download Maze</button>
+            </fieldset>
+
+            <fieldset>
+                <legend>Robot Mode & Solver</legend>
+                <div>
+                    <label for="robotMode">Robot Mode:</label>
+                    <select id="robotMode">
+                        <option value="standard">Standard Path (A to B)</option>
+                        <option value="blind">Blind Robot</option>
+                        <option value="vacuum">Vacuum Cleaner Robot</option>
+                        <option value="weighted">Weighted Maze</option>
+                        <!-- <option value="custom">Custom Mode</option> -->
+                    </select>
+                </div>
+
+                <!-- Mode-specific controls will be shown/hidden here -->
+                <div id="blindRobotControls" class="mode-controls" style="display:none;">
+                    <label for="fovDistance">FOV Distance:</label>
+                    <input type="number" id="fovDistance" value="1" min="1" max="5">
+                    <small>(Cells ahead/around robot can see)</small>
+                </div>
+                <div id="vacuumRobotControls" class="mode-controls" style="display:none;">
+                    <button id="toggleAddDirtyCellMode">Add/Remove Dirty Cells</button>
+                    <span id="dirtyCellModeStatus" class="info-text"></span>
+                    <p><small>Click on maze to mark cells as dirty.</small></p>
+                </div>
+                 <div id="weightedMazeControls" class="mode-controls" style="display:none;">
+                    <input type="checkbox" id="generateWithWeights" checked>
+                    <label for="generateWithWeights">Generate with random weights (1-9)</label>
+                    <p><small>Loaded files should have 'u v weight'.</small></p>
+                </div>
+
+
+                <div>
+                    <label for="startRow">Start Row:</label>
+                    <input type="number" id="startRow" value="0" min="0">
+                    <label for="startCol">Col:</label>
+                    <input type="number" id="startCol" value="0" min="0">
+                    <button id="pickStartPoint">Pick Start</button>
+                </div>
+                <div>
+                    <label for="endRow">End Row:</label>
+                    <input type="number" id="endRow" value="14" min="0">
+                    <label for="endCol">Col:</label>
+                    <input type="number" id="endCol" value="14" min="0">
+                    <button id="pickEndPoint">Pick End</button>
+                </div>
+                <p id="clickInstruction" class="info-text"></p>
+
+                <div>
+                    <label for="solvingAlgorithm">Algorithm:</label>
+                    <select id="solvingAlgorithm">
+                        <option value="bfs">Breadth-First Search (BFS)</option>
+                        <option value="dfs">Depth-First Search (DFS)</option>
+                        <option value="astar">A* Search Algorithm</option>
+                        <option value="dijkstra">Dijkstra's Algorithm</option>
+                    </select>
+                </div>
+                <div id="heuristicSection" style="display:none;">
+                    <label for="heuristic">Heuristic (for A*):</label>
+                    <select id="heuristic">
+                        <option value="manhattan">Manhattan Distance</option>
+                        <option value="euclidean">Euclidean Distance</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="animationSpeed" class="inline">Anim. Speed:</label>
+                    <input type="range" id="animationSpeed" min="0" max="200" value="30" step="5">
+                    <span id="speedValue">30ms</span>
+                </div>
+                <button id="findPath" disabled>Find Path</button>
+                <button id="resetCanvas">Reset View</button>
+            </fieldset>
+            
+            <div id="status">Select options and generate or load a maze.</div>
+        </div>
+
+        <div class="maze-area">
+            <canvas id="mazeCanvas"></canvas>
+        </div>
+    </div>
+
+    <footer>
+        <p>Maze generation C++ core by User. JS UI and Solver by AI.</p>
+    </footer>
+
+    <!-- <script src="js/priority_queue.js"></script> -->
+
+    <script src="js/algorithms/priority_queue.js" type="module"></script>
+    <script src="js/algorithms/utils.js" type="module"></script> <!-- New utility file -->
+    <script src="js/algorithms/bfs.js" type="module"></script> <!-- For tsp_vacuum to import -->
+    <script src="js/algorithms/dfs.js" type="module"></script> <!-- If needed by other modules -->
+    <script src="js/algorithms/a-star.js" type="module"></script> <!-- For tsp_vacuum to import -->
+    <!-- <script src="js/algorithms/dijkstra.js" type="module"></script> For tsp_vacuum to import -->
+    <!-- <script src="js/algorithms/tsp_vacuum.js" type="module"></script> If needed by other modules -->
+    <script src="js/pathfinding_algorithms.js" type="module"></script> <!-- The aggregator -->
+    <script src="js/maze_parser_renderer.js" type="module"></script>
+    <script src="js/maze_generator.js" type="module"></script>
+    <script src="js/main.js" type="module"></script>
+</body>
+</html>
