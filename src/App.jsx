@@ -1,35 +1,50 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import Board from './Board';
+import ConfigForm from './ConfigForm';
+import SolverForm from './SolverForm';
 import './App.css'
+import { useState } from 'react';
 
-function App() {
-  const [count, setCount] = useState(0)
+const robotModeList = [
+	{ value: 'vacuum', text: 'Vacuum' },
+]
+const algorithms = [
+	{ value: 'bfs', text: 'Breadth-First-Search (BFS)' },
+	{ value: 'dfs', text: 'Depth-First-Search (DFS)' },
+	{ value: 'astar', text: 'A*' },
+	{ value: 'dijkstra', text: 'Dijkstra\'s Algorithm' },
+]
+const heuristics = [
+	{ value: '', text: '' },
+]
+const modeList = [
+	{ value: 'view', text: 'View' },
+	{ value: 'setRobot', text: 'Set Robot' },
+	{ value: 'setWalls', text: 'Draw Walls' },
+	{ value: 'deleteWalls', text: 'Delete Walls' },
+	{ value: 'setDirts', text: 'Set Dirts' },
+	{ value: 'setWeights', text: 'Set Weights' },
+]
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+export default function App() {
+	const step = {
+		type: 'found',
+		visited: new Set([1, 2, 3, 5, 7, 14, 15, 21, 23, 25]),
+		frontier: new Set([4, 6, 8, 9, 10, 11, 17, 18, 24]),
+		current: 0,
+		path: [1, 2, 12, 13, 23, 33, 43, 42, 41, 51, 61, 71, 72, 73, 74, 75],
+		cost: 0,
+	}
+	const [mode, setMode] = useState('view')
+
+	return (
+		<div className='App'>
+			<div className='controls'>
+				<ConfigForm modeList={modeList} onChangeMode={m => setMode(m)} />
+				<SolverForm mode={robotModeList} algorithms={algorithms} heuristics={heuristics} />
+			</div>
+			<div className='board'>
+				<Board rows={10} cols={10} cellSize={40} mode={mode} step={step} />
+			</div>
+		</div>
+	)
 }
-
-export default App

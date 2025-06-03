@@ -1,0 +1,70 @@
+import { useEffect, useState } from 'react'
+import './ConfigForm.css'
+
+/**
+ * @param {Object} props
+ * @param {(data: {rows: number, cols: number, file: string | File}) => void} props.onSubmit Callback when click "Generate" button
+ * @param {() => void} props.onClickDownload Callback when click "Download terrain" button
+ * @param {(mode: string) => void} props.onChangeMode Callback when change mode
+ * @param {Array<{value: string, text: string}>} props.modeList Mode list
+ * @returns 
+ */
+export default function ConfigForm({ onSubmit, onClickDownload, onChangeMode, modeList }) {
+    const [data, setData] = useState({ rows: 0, cols: 0, file: '' })
+    const [mode, setMode] = useState(modeList?.[0].value)
+
+    useEffect(() => onChangeMode(mode), [mode])
+
+    return (
+        <div className='ConfigForm'>
+            <fieldset>
+                <legend>Terrain Setup</legend>
+                <div className='rows'>
+                    <label htmlFor='n-rows'>Rows</label>
+                    <input
+                        type='number'
+                        id='n-rows'
+                        readOnly={data.file !== ''}
+                        disabled={data.file !== ''}
+                        onChange={e => setData(data => ({ ...data, rows: Number(e.target.value) }))}
+                    />
+                </div>
+                <div className='cols'>
+                    <label htmlFor='n-cols'>Columns</label>
+                    <input
+                        type='number'
+                        id='n-cols'
+                        readOnly={data.file !== ''}
+                        disabled={data.file !== ''}
+                        onChange={e => setData(data => ({ ...data, cols: Number(e.target.value) }))}
+                    />
+                </div>
+                <div className='select-file'>
+                    <label htmlFor='terrain-file'>Load terrain from file (.txt)</label>
+                    <input
+                        type='file'
+                        id='terrain-file'
+                        accept='.txt'
+                        onChange={e => setData(data => ({ ...data, file: e.target.value }))}
+                    />
+                </div>
+                <div className='mode-select'>
+                    {modeList?.map((e, i) =>
+                        <label key={i}>
+                            <input
+                                type='radio'
+                                name='select-mode'
+                                value={e.value}
+                                checked={mode === e.value}
+                                onChange={() => setMode(e.value)}
+                            />
+                            {e.text}
+                        </label>
+                    )}
+                </div>
+                <button type='submit' onClick={() => onSubmit(data)}>Generate</button>
+                <button type='button' onClick={onClickDownload}>Download terrain</button>
+            </fieldset>
+        </div>
+    )
+}

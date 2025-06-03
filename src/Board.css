@@ -1,0 +1,26 @@
+.Board {
+    position: relative;
+    border: 2px solid black;
+
+    canvas {
+        position: absolute;
+        display: block;
+        margin: 0;
+        aspect-ratio: 1;
+        border: none;
+        top: 0;
+        left: 0;
+    }
+
+    .bg-layer {
+        z-index: 10;
+    }
+
+    .effect-layer {
+        z-index: 1;
+    }
+
+    .steps-visualize-layer {
+        z-index: 2;
+    }
+}
