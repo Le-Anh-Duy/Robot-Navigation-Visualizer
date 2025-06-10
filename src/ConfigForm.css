@@ -28,7 +28,7 @@
         }
     }
 
-    div.select-file {
+    .select-file {
         label {
             text-align: left;
         }
@@ -38,14 +38,21 @@
 
     }
 
-    .mode-select {
-
-        input {
-            vertical-align: middle;
-        }
+    .select-mode {
+        display: flex;
 
         label {
-            font-size: 12px;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        select {
+            text-align: center;
+            height: 2.5em;
+            font-size: 15px;
+            padding: 0px 10px;
+            margin-left: auto;
         }
     }
 

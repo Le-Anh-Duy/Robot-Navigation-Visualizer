@@ -6,16 +6,21 @@ import './SolverForm.css'
  * @param {{value: string, text: string}} props.mode Mode
  * @param {{value: string, text: string}} props.algorithms Algorithms list for selection
  * @param {{value: string, text: string}} props.heuristics Heuristics list for selection
- * @param {(data: { mode: string, algorithm: string, heuristic: string }) => void} props.onChange Callback when change selection
- * @param {(data: { mode: string, algorithm: string, heuristic: string }) => void} props.onClickSolve Callback when click "Solve" button
+ * @param {number} minSpeed Minium animation speed for simulate solving steps
+ * @param {number} maxSpeed Maximum animation speed for simulate solving steps
+ * @param {(data: { mode: string, algorithm: string, heuristic: string, speed: number }) => void} props.onChange Callback when change selection
+ * @param {(data: { mode: string, algorithm: string, heuristic: string, speed: number }) => void} props.onClickSolve Callback when click "Solve" button
  * @param {() => void} props.onClickRanking Callback when click "See your ranking" button
  * @returns
  */
-export default function SolverForm({ mode = [], algorithms = [], heuristics = [], onChange, onClickSolve, onClickRanking }) {
+export default function SolverForm({ mode = [], algorithms = [], heuristics = [],
+    minSpeed = 0, maxSpeed = 1000, onChange, onClickSolve, onClickRanking
+}) {
     const [data, setData] = useState({
         mode: '',
         algorithm: '',
         heuristic: '',
+        speed: 50,
     })
     const selectRef = useRef(null)
 
@@ -32,6 +37,10 @@ export default function SolverForm({ mode = [], algorithms = [], heuristics = []
 
     function handleHeuristicSelectChange(e) {
         setData(data => ({ ...data, heuristic: e.target.value }))
+    }
+
+    function handleSpeedChange(e) {
+        setData(data => ({ ...data, speed: Number(e.target.value) }))
     }
 
     return (
@@ -64,6 +73,10 @@ export default function SolverForm({ mode = [], algorithms = [], heuristics = []
                         <p>OR</p>
                         <input type='file' onChange={handleFileChange} />
                     </div>
+                </div>
+                <div>
+                    <label htmlFor='speed'>Animation speed: {data.speed}</label>
+                    <input id='speed' type='range' min={minSpeed} max={maxSpeed} value={data.speed} onChange={handleSpeedChange} />
                 </div>
                 <div className='button-field'>
                     <button onClick={() => onClickSolve?.(data)}>Solve</button>

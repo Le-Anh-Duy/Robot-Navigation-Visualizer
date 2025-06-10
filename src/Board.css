@@ -11,16 +11,4 @@
         top: 0;
         left: 0;
     }
-
-    .bg-layer {
-        z-index: 10;
-    }
-
-    .effect-layer {
-        z-index: 1;
-    }
-
-    .steps-visualize-layer {
-        z-index: 2;
-    }
 }

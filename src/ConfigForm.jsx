@@ -48,19 +48,15 @@ export default function ConfigForm({ onSubmit, onClickDownload, onChangeMode, mo
                         onChange={e => setData(data => ({ ...data, file: e.target.value }))}
                     />
                 </div>
-                <div className='mode-select'>
-                    {modeList?.map((e, i) =>
-                        <label key={i}>
-                            <input
-                                type='radio'
-                                name='select-mode'
-                                value={e.value}
-                                checked={mode === e.value}
-                                onChange={() => setMode(e.value)}
-                            />
-                            {e.text}
-                        </label>
-                    )}
+                <div className='select-mode'>
+                    <label>
+                        Mode
+                        <select onChange={e => onChangeMode(Number(e.target.value))}>
+                            {modeList?.map((e, i) =>
+                                <option key={i} value={e.value}>{e.text}</option>
+                            )}
+                        </select>
+                    </label>
                 </div>
                 <button type='submit' onClick={() => onSubmit(data)}>Generate</button>
                 <button type='button' onClick={onClickDownload}>Download terrain</button>

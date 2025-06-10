@@ -1,8 +1,9 @@
+import { useState } from 'react';
 import Board from './Board';
 import ConfigForm from './ConfigForm';
 import SolverForm from './SolverForm';
 import './App.css'
-import { useState } from 'react';
+import Mode from './Mode';
 
 const robotModeList = [
 	{ value: 'vacuum', text: 'Vacuum' },
@@ -17,12 +18,12 @@ const heuristics = [
 	{ value: '', text: '' },
 ]
 const modeList = [
-	{ value: 'view', text: 'View' },
-	{ value: 'setRobot', text: 'Set Robot' },
-	{ value: 'setWalls', text: 'Draw Walls' },
-	{ value: 'deleteWalls', text: 'Delete Walls' },
-	{ value: 'setDirts', text: 'Set Dirts' },
-	{ value: 'setWeights', text: 'Set Weights' },
+	{ value: Mode.VIEW, text: 'View' },
+	{ value: Mode.SET_ROBOT, text: 'Set Robot' },
+	{ value: Mode.DRAW_WALL, text: 'Draw Walls' },
+	{ value: Mode.DELETE_WALL, text: 'Delete Walls' },
+	{ value: Mode.SET_DIRT, text: 'Set Dirts' },
+	{ value: Mode.SET_WEIGHT, text: 'Set Weights' },
 ]
 
 export default function App() {
@@ -34,7 +35,7 @@ export default function App() {
 		path: [1, 2, 12, 13, 23, 33, 43, 42, 41, 51, 61, 71, 72, 73, 74, 75],
 		cost: 0,
 	}
-	const [mode, setMode] = useState('view')
+	const [mode, setMode] = useState(Mode.VIEW)
 
 	return (
 		<div className='App'>
