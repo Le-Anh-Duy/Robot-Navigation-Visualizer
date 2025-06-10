@@ -3,6 +3,12 @@ import THEME_COLORS from './theme'
 import Mode from './Mode'
 import Layer from './Layer'
 
+/**
+ * @param {Object} props
+ * @param {CanvasHelper} props.canvas 
+ * @param {CanvasRenderingContext2D} props.ctx
+ * @returns 
+ */
 export default function SimulationLayer({ step, ctx, canvas, ...props }) {
     const rows = canvas.rows, cols = canvas.cols, cellSize = canvas.cellSize
 

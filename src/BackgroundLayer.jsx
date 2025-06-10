@@ -2,6 +2,12 @@ import { useEffect, useRef } from 'react'
 import THEME_COLORS from './theme'
 import Layer from './Layer'
 
+/**
+ * @param {Object} props
+ * @param {CanvasHelper} props.canvas 
+ * @param {CanvasRenderingContext2D} props.ctx
+ * @returns 
+ */
 export default function BackgroundLayer({ ctx, canvas, ...props }) {
     if (ctx) {
         const rows = canvas.rows, cols = canvas.cols, cellSize = canvas.cellSize

@@ -66,15 +66,13 @@ export default function Board({
             />
             <DirtsLayer
                 dirts={state.dirts}
+                onChange={dirts => setState(state => ({ ...state, dirts: dirts }))}
             />
             <EditWallLayer
                 adjacency={state.adjacency}
                 onChange={(adj) => setState(state => ({ ...state, adjacency: adj }))}
                 mode={mode}
-                style={{
-                    pointerEvents: mode === Mode.DRAW_WALL || mode === Mode.DELETE_WALL
-                }}
-
+                pointerEvents={mode === Mode.DRAW_WALL || mode === Mode.DELETE_WALL}
             />
         </LayerGroup>
 

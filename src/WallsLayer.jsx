@@ -2,6 +2,12 @@ import { memo, useEffect, useMemo, useRef } from 'react'
 import THEME_COLORS from './theme'
 import Layer from './Layer'
 
+/**
+ * @param {Object} props
+ * @param {CanvasHelper} props.canvas 
+ * @param {CanvasRenderingContext2D} props.ctx
+ * @returns 
+ */
 export default function WallsLayer({ adjacency, ctx, canvas, ...props }) {
     if (ctx) {
         ctx.clearRect(0, 0, canvas.width, canvas.height)

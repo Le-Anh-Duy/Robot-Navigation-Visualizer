@@ -3,6 +3,12 @@ import THEME_COLORS from './theme'
 import Mode from './Mode'
 import Layer from './Layer'
 
+/**
+ * @param {Object} props
+ * @param {CanvasHelper} props.canvas 
+ * @param {CanvasRenderingContext2D} props.ctx
+ * @returns 
+ */
 export default function EditWallLayer({ onChange, adjacency, mode, ctx, canvas, ...props }) {
     const pointsRef = useRef([])
     const isDragging = useRef(false)

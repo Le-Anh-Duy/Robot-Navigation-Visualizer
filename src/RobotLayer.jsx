@@ -4,6 +4,12 @@ import Layer from './Layer'
 const robotImg = new Image()
 robotImg.src = './robot.svg'
 
+/**
+ * @param {Object} props
+ * @param {CanvasHelper} props.canvas 
+ * @param {CanvasRenderingContext2D} props.ctx
+ * @returns 
+ */
 export default function RobotLayer({ onChange, robot, ctx, canvas, ...props }) {
     const robotRef = useRef(null)
 

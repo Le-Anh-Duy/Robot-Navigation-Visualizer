@@ -3,7 +3,7 @@ import './SolverForm.css'
 
 /**
  * @param {Object} props
- * @param {{value: string, text: string}} props.mode Mode
+ * @param {{value: Mode, text: string}} props.mode Mode
  * @param {{value: string, text: string}} props.algorithms Algorithms list for selection
  * @param {{value: string, text: string}} props.heuristics Heuristics list for selection
  * @param {number} minSpeed Minium animation speed for simulate solving steps
