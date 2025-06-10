@@ -1,10 +1,19 @@
 import { useEffect, useRef } from 'react'
 import Layer from './Layer'
+import CanvasHelper from './CanvasHelper'
 
 const dirtImg = new Image()
 dirtImg.src = './dirt.svg'
 
-export default function DirtsLayer({ dirts, ctx, canvas, ...props }) {
+/**
+ * @param {Object} props
+ * @param {CanvasHelper} props.canvas 
+ * @param {CanvasRenderingContext2D} props.ctx
+ * @returns 
+ */
+export default function DirtsLayer({ dirts, onChange, ctx, canvas, ...props }) {
+    const dirtsRef = useRef(new Map([...dirts.entries()].map(value => [value, undefined])))
+
     class Dirt {
         constructor(x, y, padding = { top: 5, right: 5, bottom: 5, left: 5 }) {
             this.x = x
@@ -12,35 +21,45 @@ export default function DirtsLayer({ dirts, ctx, canvas, ...props }) {
             this.padding = padding
             this.width = canvas.cellSize - this.padding.left - this.padding.right
             this.height = canvas.cellSize - this.padding.top - this.padding.bottom
+            this.currentWidth = 0
+            this.currentHeight = 0
+            this.velocity = 0.5
         }
 
         update(deltaTime) {
             ctx.save()
             // Draw dirt
-            ctx.drawImage(dirtImg, this.x + this.padding.left, this.y + this.padding.top, this.width, this.height)
+            ctx.drawImage(dirtImg, this.x + canvas.cellSize / 2 - this.currentWidth / 2, this.y + canvas.cellSize / 2 - this.currentHeight / 2, this.currentWidth, this.currentHeight)
+            if (this.currentWidth < this.width) {
+                // Calculate new velocity for smooth animation
+                const vel = (0.98 * (1 - this.currentWidth / this.width) ** 1.2 + 0.02) * this.velocity
+                this.currentWidth += vel * deltaTime
+                this.currentWidth = Math.min(this.currentWidth, this.width)
+            }
+            this.currentHeight = this.currentWidth
             ctx.restore()
         }
     }
 
-    const dirtsRef = useRef(null)
+    function handleClick(e) {
+        const cellIndex = canvas.worldCoordToCellIndex(e.clientX, e.clientY)
+        const pos = canvas.indexToCellCoord(cellIndex)
+
+        if (dirtsRef.current.has(cellIndex))
+            dirtsRef.current.delete(cellIndex)
+        else
+            dirtsRef.current.set(cellIndex, new Dirt(pos.x, pos.y))
+
+        onChange?.([...dirtsRef.current.entries()].map(([key, value]) => (value && key)))
+    }
 
     function update(deltaTime) {
         ctx.clearRect(0, 0, canvas.width, canvas.height)
-        for (const dirt of dirtsRef.current) {
-            dirt.update(deltaTime)
+
+        for (const [key, value] of dirtsRef.current) {
+            value.update(deltaTime)
         }
     }
-
-    useEffect(() => {
-        if (!ctx)
-            return;
-
-        dirtsRef.current = [...dirts].map(e => {
-            const pos = canvas.indexToCellCoord(e)
-            return new Dirt(pos.x, pos.y)
-        })
-
-    }, [dirts])
 
     useEffect(() => {
         if (!ctx)
@@ -61,14 +80,7 @@ export default function DirtsLayer({ dirts, ctx, canvas, ...props }) {
         requestAnimationFrame(anim)
     }, [ctx])
 
-    if (ctx && !dirtsRef.current) {
-        dirtsRef.current = [...dirts].map(e => {
-            const pos = canvas.indexToCellCoord(e)
-            return new Dirt(pos.x, pos.y)
-        })
-    }
-
     return (
-        <Layer {...props} />
+        <Layer {...props} onClick={handleClick} />
     )
 }
