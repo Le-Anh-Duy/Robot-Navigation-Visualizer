@@ -60,13 +60,14 @@ export default function Board({
                 disabled={mode !== Mode.SOLVING}
             />
             <RobotLayer
-                pointerEvents={mode === Mode.SET_ROBOT}
                 onChange={robot => setState(state => ({ ...state, robot: robot }))}
                 robot={state.robot}
+                pointerEvents={mode === Mode.SET_ROBOT}
             />
             <DirtsLayer
                 dirts={state.dirts}
                 onChange={dirts => setState(state => ({ ...state, dirts: dirts }))}
+                pointerEvents={mode === Mode.SET_DIRT}
             />
             <EditWallLayer
                 adjacency={state.adjacency}
