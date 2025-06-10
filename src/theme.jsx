@@ -1,0 +1,26 @@
+const THEME_COLORS = {
+    gridLine: '#ccc',
+    cellBackground: 'white',
+    robot: 'blue',
+    robotText: 'white',
+    dirt: 'saddlebrown',
+    wall: 'black',
+    wallThickness: 2,
+    previewWallAdd: 'rgb(145, 205, 255)',
+    previewWallRemove: 'rgba(255, 71, 71, 0.5)',
+    previewWallThickness: 3,
+    previewPointColor1: 'rgba(60, 167, 255, 0.7)',
+    previewPointColorAdd: 'rgba(60, 167, 255, 0.7)',
+    previewPointFlare1: 'rgba(97, 184, 255, 0.3)',
+    previewPointColor2: 'rgba(255, 20, 20, 0.7)',
+    previewPointColorRemove: 'rgba(255, 20, 20, 0.7)',
+    previewPointFlare2: 'rgba(255, 137, 137, 0.3)',
+    previewPointThickness: 6,
+    weightText: 'rgba(0,0,0,0.7)',
+    solutionPath: 'rgba(0, 255, 0, 0.7)',
+    visitedCell: 'rgba(173, 216, 230, 0.5)',
+    frontierCell: 'rgba(211, 211, 211, 0.5)',
+    currentProcessingCell: 'rgba(255, 165, 0, 0.7)',
+};
+
+export default THEME_COLORS
