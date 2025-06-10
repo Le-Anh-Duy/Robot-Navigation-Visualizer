@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import Layer from './Layer'
+import Layer from '../layer_system/Layer'
 
 const robotImg = new Image()
 robotImg.src = './robot.svg'

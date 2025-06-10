@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import THEME_COLORS from './theme'
-import Mode from './Mode'
-import Layer from './Layer'
+import THEME_COLORS from '../constants/theme'
+import Mode from '../constants/Mode'
+import Layer from '../layer_system/Layer'
 
 /**
  * @param {Object} props

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import './SolverForm.css'
+import '../../styles/SolverForm.css'
 
 /**
  * @param {Object} props

@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import Board from './Board';
-import ConfigForm from './ConfigForm';
-import SolverForm from './SolverForm';
-import './App.css'
-import Mode from './Mode';
+import Board from './js/components/Board';
+import ConfigForm from './js/components/ConfigForm';
+import SolverForm from './js/components/SolverForm';
+import './styles/App.css'
+import Mode from './js/constants/Mode';
 
 const robotModeList = [
 	{ value: 'vacuum', text: 'Vacuum' },

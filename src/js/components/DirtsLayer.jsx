@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
-import Layer from './Layer'
-import CanvasHelper from './CanvasHelper'
+import Layer from '../layer_system/Layer'
+import CanvasHelper from '../layer_system/CanvasHelper'
 
 const dirtImg = new Image()
 dirtImg.src = './dirt.svg'

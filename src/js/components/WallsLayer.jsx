@@ -1,6 +1,6 @@
 import { memo, useEffect, useMemo, useRef } from 'react'
-import THEME_COLORS from './theme'
-import Layer from './Layer'
+import THEME_COLORS from '../constants/theme'
+import Layer from '../layer_system/Layer'
 
 /**
  * @param {Object} props

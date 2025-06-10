@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import './ConfigForm.css'
+import '../../styles/ConfigForm.css'
 
 /**
  * @param {Object} props
