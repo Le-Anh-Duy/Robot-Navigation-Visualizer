@@ -61,8 +61,6 @@ function EventHandleLayer({ ref, ...props }) {
         trigger: (events) => setEvents(events)
     }))
 
-    console.log('events', events)
-
     return (
         <canvas
             {...Object.fromEntries(
