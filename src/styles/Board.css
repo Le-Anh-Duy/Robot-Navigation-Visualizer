@@ -1,14 +1,4 @@
 .Board {
     position: relative;
     border: 2px solid black;
-
-    canvas {
-        position: absolute;
-        display: block;
-        margin: 0;
-        aspect-ratio: 1;
-        border: none;
-        top: 0;
-        left: 0;
-    }
 }
