@@ -34,8 +34,8 @@ export default function ConfigForm({ onSubmit, onClickDownload, onChangeMode, mo
                     <input
                         type='number'
                         id='n-cols'
-                        readOnly={data.file !== ''}
-                        disabled={data.file !== ''}
+                        readOnly={data.file !== undefined}
+                        disabled={data.file !== undefined}
                         onChange={e => setData(data => ({ ...data, cols: Number(e.target.value) }))}
                     />
                 </div>
