@@ -4,6 +4,8 @@ import ConfigForm from './js/components/ConfigForm';
 import SolverForm from './js/components/SolverForm';
 import './styles/App.css'
 import Mode from './js/constants/Mode';
+import generate from './js/algos/generate';
+
 
 const robotModeList = [
 	{ value: 'vacuum', text: 'Vacuum' },
@@ -36,15 +38,29 @@ export default function App() {
 		cost: 0,
 	}
 	const [mode, setMode] = useState(Mode.VIEW)
+	// adjacency matrix for top, right, bottom, left
+	// let nrow = 10, ncol = 10;
+
+	const [nrow, setNrow] = useState(10);
+	const [ncol, setNcol] = useState(10);
+
+	// value to update: * @param {{ robot: number, dirts: Set<number>, weights: Array<number>, adjacency: Array<Array<boolean>(4)> }} props.value 
+	const [value, setValue] = useState(null);
 
 	return (
 		<div className='App'>
 			<div className='controls'>
-				<ConfigForm modeList={modeList} onChangeMode={m => setMode(m)} />
+				<ConfigForm modeList={modeList} onChangeMode={m => setMode(m)} onSubmit={
+					values => 
+						{
+							console.log(values); setNrow(values.rows); setNcol(values.cols);
+							setValue({ robot: 0, dirts: new Set(), ...generate(values.rows, values.cols, 0, true, true) });
+						}
+					} />
 				<SolverForm mode={robotModeList} algorithms={algorithms} heuristics={heuristics} />
 			</div>
 			<div className='board'>
-				<Board rows={10} cols={10} cellSize={40} mode={mode} step={step} />
+				<Board rows={nrow} cols={ncol} cellSize={40} mode={mode} step={step} value={value} />
 			</div>
 		</div>
 	)

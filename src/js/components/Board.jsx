@@ -14,7 +14,7 @@ import SimulationLayer from './SimulationLayer'
  * @param {number} props.rows Number of rows
  * @param {number} props.cols Number of columns
  * @param {number} props.cellSize Side length of cell (px)
- * @param {{ robot: number, dirts: Set<number>, weights: Array<number>, adjacency: Array<number> }} props.value 
+ * @param {{ robot: number, dirts: Set<number>, weights: Array<number>, adjacency: Array<Array<boolean>(4)> }} props.value 
  *  Set the value of board. `dirts`, `weights` and `adjacency` are store index of cells (flatten)
  * @param {Mode} props.mode Current mode (see Mode.jsx)
  * @param {{type: string, visited: Set<number>, frontier: Set<number>, current: number, path: Array<number>, cost: number}} props.step Current step when `mode`=`Mode.SOLVING`
@@ -28,7 +28,7 @@ export default function Board({
     value,
     mode = Mode.VIEW,
     step = { type: '', visited: new Set(), frontier: new Set(), current: -1, path: [], cost: 0 },
-    onChange,
+    onChange = () => { console.warn('onChange not implemented') },
 }) {
     const [state, setState] = useState({ robot: 0, dirts: new Set(), weights: [], adjacency: [] })
     const width = cols * cellSize, height = rows * cellSize
@@ -40,7 +40,7 @@ export default function Board({
         else {
             setState(value)
         }
-    }, [rows, cols])
+    }, [value, rows, cols])
 
     return (
         <LayerGroup
