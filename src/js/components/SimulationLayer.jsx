@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import THEME_COLORS from '../constants/theme'
 import Mode from '../constants/Mode'
 import Layer from '../layer_system/Layer'
+import CanvasHelper from '../layer_system/CanvasHelper'
 
 /**
  * @param {Object} props
@@ -13,6 +14,13 @@ export default function SimulationLayer({ step, ctx, canvas, ...props }) {
     const rows = canvas.rows, cols = canvas.cols, cellSize = canvas.cellSize
 
     function update(deltaTime) {
+        if (props.disabled) {
+            drawPath.time = undefined
+            return
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+
         drawVisitedCells(deltaTime)
         drawFrontierCells(deltaTime)
         drawCurrentProcessingCell(deltaTime)
@@ -88,7 +96,7 @@ export default function SimulationLayer({ step, ctx, canvas, ...props }) {
         }
 
         requestAnimationFrame(anim)
-    }, [ctx])
+    }, [ctx, canvas])
 
     return (
         <Layer {...props} />

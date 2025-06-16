@@ -6,8 +6,8 @@ import '../../styles/SolverForm.css'
  * @param {{value: Mode, text: string}} props.mode Mode
  * @param {{value: string, text: string}} props.algorithms Algorithms list for selection
  * @param {{value: string, text: string}} props.heuristics Heuristics list for selection
- * @param {number} minSpeed Minium animation speed for simulate solving steps
- * @param {number} maxSpeed Maximum animation speed for simulate solving steps
+ * @param {number} props.minSpeed Minium animation speed for simulate solving steps
+ * @param {number} props.maxSpeed Maximum animation speed for simulate solving steps
  * @param {(data: { mode: string, algorithm: string, heuristic: string, speed: number }) => void} props.onChange Callback when change selection
  * @param {(data: { mode: string, algorithm: string, heuristic: string, speed: number }) => void} props.onClickSolve Callback when click "Solve" button
  * @param {() => void} props.onClickRanking Callback when click "See your ranking" button
