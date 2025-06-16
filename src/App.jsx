@@ -36,15 +36,70 @@ export default function App() {
 		cost: 0,
 	}
 	const [mode, setMode] = useState(Mode.VIEW)
+	const [board, setBoard] = useState({
+		rows: 0,
+		cols: 0,
+		data: undefined,
+	})
+
+	function handleConfigFormSubmit(data) {
+		if (data.file) {
+			const reader = new FileReader()
+			reader.onload = e => {
+				try {
+					const text = e.target.result
+					const data = JSON.parse(text)
+					setBoard(data)
+				}
+				catch (err) {
+					console.log('Error parse json file: ', data.file)
+				}
+			}
+
+			reader.readAsText(data.file)
+		}
+		else {
+			setBoard(board => ({
+				rows: data.rows,
+				cols: data.cols,
+				data: board.data
+			}))
+		}
+	}
+
+	function handleDownloadFile() {
+		const blob = new Blob([JSON.stringify(board, null, 2)], { type: "application/json" });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement("a");
+		a.href = url;
+		a.download = "your_board.json";
+		a.click();
+		URL.revokeObjectURL(url);
+	}
 
 	return (
 		<div className='App'>
 			<div className='controls'>
-				<ConfigForm modeList={modeList} onChangeMode={m => setMode(m)} />
+				<ConfigForm
+					modeList={modeList}
+					onChangeMode={m => setMode(m)}
+					onSubmit={handleConfigFormSubmit}
+					onClickDownload={handleDownloadFile}
+				/>
 				<SolverForm mode={robotModeList} algorithms={algorithms} heuristics={heuristics} />
 			</div>
 			<div className='board'>
-				<Board rows={10} cols={10} cellSize={40} mode={mode} step={step} />
+				<Board
+					rows={board.rows}
+					cols={board.cols}
+					cellSize={40}
+					value={board.data}
+					mode={mode}
+					step={step}
+					onChange={data => {
+						setBoard(board => ({ ...board, data: data }))
+					}}
+				/>
 			</div>
 		</div>
 	)

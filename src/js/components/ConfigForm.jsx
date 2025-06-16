@@ -40,11 +40,11 @@ export default function ConfigForm({ onSubmit, onClickDownload, onChangeMode, mo
                     />
                 </div>
                 <div className='select-file'>
-                    <label htmlFor='terrain-file'>Load terrain from file (.txt)</label>
+                    <label htmlFor='terrain-file'>Load terrain from file (.json)</label>
                     <input
                         type='file'
                         id='terrain-file'
-                        accept='.txt'
+                        accept='.json'
                         onChange={e => setData(data => ({ ...data, file: e.target.files[0] }))}
                     />
                 </div>

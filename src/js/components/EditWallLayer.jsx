@@ -15,6 +15,16 @@ export default function EditWallLayer({ onChange, adjacency, mode, ctx, canvas, 
     const pointStack = useRef([])
     const [adj, setAdj] = useState(adjacency)
 
+    function updateAdj(updater) {
+        const newState = typeof updater === 'function' ? updater(adj) : updater;
+
+        onChange?.(newState);
+
+        if (adjacency === undefined) {
+            setAdj(newState);
+        }
+    }
+
     class Point {
         constructor(row, col, radius = THEME_COLORS.previewPointThickness / 2) {
             this.row = row
@@ -119,6 +129,13 @@ export default function EditWallLayer({ onChange, adjacency, mode, ctx, canvas, 
 
             const d = { col: h.col - l.col, row: h.row - l.row }
             const val = mode === Mode.DRAW_WALL
+
+            // If wall on edge of board, remove it
+            if ((l.col === 0 && h.col === 0) || (l.col === cols && h.col === cols) ||
+                (l.row === 0 && h.row === 0) || (l.row === rows && h.row === rows)) {
+                continue
+            }
+
             // Horizontal wall (top side of cell)
             if (d.col === 1) {
                 const cellIndex = l.row * cols + l.col
@@ -133,17 +150,20 @@ export default function EditWallLayer({ onChange, adjacency, mode, ctx, canvas, 
             }
         }
 
-        setAdj(newAdj)
+        updateAdj(newAdj)
+        pointStack.current = []
+    }
+
+    function handleMouseLeave(e) {
+        // Cancel
+        isDragging.current = false;
         pointStack.current = []
     }
 
     useEffect(() => {
-        setAdj(adjacency)
+        if (adjacency)
+            setAdj(adjacency)
     }, [adjacency])
-
-    useEffect(() => {
-        onChange(adj)
-    }, [adj])
 
     useEffect(() => {
         if (!ctx)
@@ -170,6 +190,7 @@ export default function EditWallLayer({ onChange, adjacency, mode, ctx, canvas, 
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseLeave}
         />
     )
 }

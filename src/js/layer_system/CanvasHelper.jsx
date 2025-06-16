@@ -29,7 +29,7 @@ export default class CanvasHelper {
     // Convert index (flatten) to cell coordinate
     indexToCellCoord(index) {
         if (index >= this.rows * this.cols)
-            return { x: (this.cols - 1) * cellSize, y: (this.rows - 1) * this.cellSize }
+            return { x: (this.cols - 1) * this.cellSize, y: (this.rows - 1) * this.cellSize }
 
         const row = Math.trunc(index / this.cols), col = index % this.cols
 

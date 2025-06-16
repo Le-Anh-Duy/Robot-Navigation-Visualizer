@@ -26,7 +26,7 @@ export default function DirtsLayer({ dirts, onChange, ctx, canvas, ...props }) {
             this.velocity = 0.5
         }
 
-        update(deltaTime) {
+        update(deltaTime, canvas) {
             ctx.save()
             // Draw dirt
             ctx.drawImage(dirtImg, this.x + canvas.cellSize / 2 - this.currentWidth / 2, this.y + canvas.cellSize / 2 - this.currentHeight / 2, this.currentWidth, this.currentHeight)
@@ -57,9 +57,18 @@ export default function DirtsLayer({ dirts, onChange, ctx, canvas, ...props }) {
         ctx.clearRect(0, 0, canvas.width, canvas.height)
 
         for (const [key, value] of dirtsRef.current) {
-            value.update(deltaTime)
+            value.update(deltaTime, canvas)
         }
     }
+
+    useEffect(() => {
+        if (dirts)
+            dirtsRef.current = new Map([...dirts].map(value => {
+                const pos = canvas.indexToCellCoord(value)
+                return [value, new Dirt(pos.x, pos.y)]
+            }))
+    }, [dirts])
+
 
     useEffect(() => {
         if (!ctx)
@@ -78,7 +87,7 @@ export default function DirtsLayer({ dirts, onChange, ctx, canvas, ...props }) {
         }
 
         requestAnimationFrame(anim)
-    }, [ctx])
+    }, [ctx, canvas])
 
     return (
         <Layer {...props} onClick={handleClick} />
