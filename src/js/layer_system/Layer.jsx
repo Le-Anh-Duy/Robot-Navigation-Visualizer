@@ -33,7 +33,6 @@ export default function Layer({ pointerEvents = true, ...props }) {
             Object.entries(eventProps.current).forEach(([key, value]) => {
                 addEventListener?.(key, value)
             })
-
     }, [props, pointerEvents])
 
     return (
@@ -43,6 +42,7 @@ export default function Layer({ pointerEvents = true, ...props }) {
                 ...props.style,
                 // Hidden when disabled
                 display: props.disabled ? 'none' : 'block',
+                pointerEvents: 'none'
             }}
         />
     )

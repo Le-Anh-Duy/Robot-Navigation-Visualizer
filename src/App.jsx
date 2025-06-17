@@ -4,8 +4,8 @@ import ConfigForm from './js/components/ConfigForm';
 import SolverForm from './js/components/SolverForm';
 import './styles/App.css'
 import Mode from './js/constants/Mode';
-import generate from './js/algos/generate';
-
+import alg from './ExampleAlg';
+import generate from './js/algos/generate'
 
 const robotModeList = [
 	{ value: 'vacuum', text: 'Vacuum' },
@@ -26,41 +26,104 @@ const modeList = [
 	{ value: Mode.DELETE_WALL, text: 'Delete Walls' },
 	{ value: Mode.SET_DIRT, text: 'Set Dirts' },
 	{ value: Mode.SET_WEIGHT, text: 'Set Weights' },
+	{ value: Mode.SOLVING, text: 'Solve' },
 ]
 
 export default function App() {
-	const step = {
-		type: 'found',
-		visited: new Set([1, 2, 3, 5, 7, 14, 15, 21, 23, 25]),
-		frontier: new Set([4, 6, 8, 9, 10, 11, 17, 18, 24]),
-		current: 0,
-		path: [1, 2, 12, 13, 23, 33, 43, 42, 41, 51, 61, 71, 72, 73, 74, 75],
-		cost: 0,
-	}
 	const [mode, setMode] = useState(Mode.VIEW)
-	// adjacency matrix for top, right, bottom, left
-	// let nrow = 10, ncol = 10;
+	const [board, setBoard] = useState({
+		rows: 0,
+		cols: 0,
+		data: undefined,
+	})
+	const [step, setStep] = useState({
+		type: '',
+		visited: new Set(),
+		frontier: new Set(),
+		current: -1,
+		path: [],
+		cost: 0,
+	})
 
-	const [nrow, setNrow] = useState(10);
-	const [ncol, setNcol] = useState(10);
+	function handleConfigFormSubmit(data) {
+		if (data.file) {
+			const reader = new FileReader()
+			reader.onload = e => {
+				try {
+					const text = e.target.result
+					const data = JSON.parse(text)
+					setBoard(data)
+				}
+				catch (err) {
+					console.log('Error parse json file: ', data.file)
+				}
+			}
 
-	// value to update: * @param {{ robot: number, dirts: Set<number>, weights: Array<number>, adjacency: Array<Array<boolean>(4)> }} props.value 
-	const [value, setValue] = useState(null);
+			reader.readAsText(data.file)
+		}
+		else {
+
+			let nData = generate(data.rows, data.cols, 0, 0, 0);
+
+			setBoard(board => ({
+				rows: data.rows,
+				cols: data.cols,
+				data: nData
+			}))
+		}
+	}
+
+	function handleDownloadFile() {
+		const blob = new Blob([JSON.stringify(board, null, 2)], { type: "application/json" });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement("a");
+		a.href = url;
+		a.download = "your_board.json";
+		a.click();
+		URL.revokeObjectURL(url);
+	}
+
+	// Example for solving mode
+	// First, generate maze with size 10 x 10 (to match with example result)
+	// Then, click "Solve" button to invoke this function
+	async function handleClickSolve(data) {
+		setMode(Mode.SOLVING)
+		// data represent robot_mode, algorithm and heuristic
+
+		// Call solver function
+		const res = alg(data, 1000)
+		for await (const step of res)
+			setStep(step)
+	}
 
 	return (
 		<div className='App'>
 			<div className='controls'>
-				<ConfigForm modeList={modeList} onChangeMode={m => setMode(m)} onSubmit={
-					values => 
-						{
-							console.log(values); setNrow(values.rows); setNcol(values.cols);
-							setValue({ robot: 0, dirts: new Set(), ...generate(values.rows, values.cols, 0, true, true) });
-						}
-					} />
-				<SolverForm mode={robotModeList} algorithms={algorithms} heuristics={heuristics} />
+				<ConfigForm
+					modeList={modeList}
+					onChangeMode={m => setMode(m)}
+					onSubmit={handleConfigFormSubmit}
+					onClickDownload={handleDownloadFile}
+				/>
+				<SolverForm
+					mode={robotModeList}
+					algorithms={algorithms}
+					heuristics={heuristics}
+					onClickSolve={handleClickSolve}
+				/>
 			</div>
 			<div className='board'>
-				<Board rows={nrow} cols={ncol} cellSize={40} mode={mode} step={step} value={value} />
+				<Board
+					rows={board.rows}
+					cols={board.cols}
+					cellSize={40}
+					value={board.data}
+					mode={mode}
+					step={step}
+					onChange={data => {
+						setBoard(board => ({ ...board, data: data }))
+					}}
+				/>
 			</div>
 		</div>
 	)

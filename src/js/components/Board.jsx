@@ -30,6 +30,16 @@ export default function Board({
     step = { type: '', visited: new Set(), frontier: new Set(), current: -1, path: [], cost: 0 },
     onChange = () => { console.warn('onChange not implemented') },
 }) {
+    function updateState(updater) {
+        const newState = typeof updater === 'function' ? updater(state) : updater;
+
+        onChange?.(newState);
+
+        if (value === undefined) {
+            setState(newState);
+        }
+    }
+
     const [state, setState] = useState({ robot: 0, dirts: new Set(), weights: [], adjacency: [] })
     const width = cols * cellSize, height = rows * cellSize
 
@@ -37,10 +47,12 @@ export default function Board({
         if (!value) {
             setState(state => ({ ...state, adjacency: Array.from({ length: rows * cols }, (_, i) => Array(4).fill(false)) }))
         }
-        else {
+    }, [rows, cols])
+
+    useEffect(() => {
+        if (value)
             setState(value)
-        }
-    }, [value, rows, cols])
+    }, [value])
 
     return (
         <LayerGroup
@@ -60,18 +72,18 @@ export default function Board({
                 disabled={mode !== Mode.SOLVING}
             />
             <RobotLayer
-                onChange={robot => setState(state => ({ ...state, robot: robot }))}
+                onChange={robot => updateState(state => ({ ...state, robot: robot }))}
                 robot={state.robot}
                 pointerEvents={mode === Mode.SET_ROBOT}
             />
             <DirtsLayer
                 dirts={state.dirts}
-                onChange={dirts => setState(state => ({ ...state, dirts: dirts }))}
+                onChange={dirts => updateState(state => ({ ...state, dirts: dirts }))}
                 pointerEvents={mode === Mode.SET_DIRT}
             />
             <EditWallLayer
                 adjacency={state.adjacency}
-                onChange={(adj) => setState(state => ({ ...state, adjacency: adj }))}
+                onChange={adj => updateState(state => ({ ...state, adjacency: adj }))}
                 mode={mode}
                 pointerEvents={mode === Mode.DRAW_WALL || mode === Mode.DELETE_WALL}
             />

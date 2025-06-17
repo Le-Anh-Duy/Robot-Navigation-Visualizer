@@ -14,14 +14,12 @@ export default function LayerGroup({ cellSize, ...props }) {
             events.current.set(type, new Set());
         }
         events.current.get(type).add(listener);
-        if (eventHandleRef.current)
-            eventHandleRef.current.trigger(new Map(events.current))
+        eventHandleRef.current?.trigger(new Map(events.current))
     }, [])
 
     const removeEventListener = useCallback((type, listener) => {
         events.current.get(type)?.delete(listener);
-        if (eventHandleRef.current)
-            eventHandleRef.current.trigger(new Map(events.current))
+        eventHandleRef.current?.trigger(new Map(events.current))
     }, [])
 
     return (
@@ -60,8 +58,6 @@ function EventHandleLayer({ ref, ...props }) {
     useImperativeHandle(ref, () => ({
         trigger: (events) => setEvents(events)
     }))
-
-    console.log('events', events)
 
     return (
         <canvas

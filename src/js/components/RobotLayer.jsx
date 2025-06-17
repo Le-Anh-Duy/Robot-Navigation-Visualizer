@@ -4,6 +4,8 @@ import Layer from '../layer_system/Layer'
 const robotImg = new Image()
 robotImg.src = './robot.svg'
 
+var id
+
 /**
  * @param {Object} props
  * @param {CanvasHelper} props.canvas 
@@ -12,6 +14,9 @@ robotImg.src = './robot.svg'
  */
 export default function RobotLayer({ onChange, robot, ctx, canvas, ...props }) {
     const robotRef = useRef(null)
+
+    if (canvas) {
+    }
 
     class Robot {
         constructor(x, y, padding = { top: 5, right: 5, bottom: 5, left: 5 }) {
@@ -23,7 +28,7 @@ export default function RobotLayer({ onChange, robot, ctx, canvas, ...props }) {
             this.velocity = { x: 0, y: 0 }
         }
 
-        update(deltaTime) {
+        update(deltaTime, canvas) {
             ctx.save()
 
             // Make "motion blur" effect
@@ -42,7 +47,7 @@ export default function RobotLayer({ onChange, robot, ctx, canvas, ...props }) {
     }
 
     function update(deltaTime) {
-        robotRef.current.update(deltaTime)
+        robotRef.current.update(deltaTime, canvas)
     }
 
     function handleClick(e) {
@@ -87,11 +92,14 @@ export default function RobotLayer({ onChange, robot, ctx, canvas, ...props }) {
             lastTime = currentTime
             update(deltaTime)
 
-            requestAnimationFrame(anim)
+            id = requestAnimationFrame(anim)
         }
 
-        requestAnimationFrame(anim)
-    }, [ctx])
+        if (id)
+            cancelAnimationFrame(id)
+
+        id = requestAnimationFrame(anim)
+    }, [ctx, canvas])
 
     if (ctx && !robotRef.current)
         robotRef.current = new Robot(0, 0)

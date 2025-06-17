@@ -3,14 +3,14 @@ import '../../styles/ConfigForm.css'
 
 /**
  * @param {Object} props
- * @param {(data: {rows: number, cols: number, file: string | File}) => void} props.onSubmit Callback when click "Generate" button
+ * @param {(data: {rows: number, cols: number, file: undefined | File}) => void} props.onSubmit Callback when click "Generate" button
  * @param {() => void} props.onClickDownload Callback when click "Download terrain" button
  * @param {(mode: string) => void} props.onChangeMode Callback when change mode
  * @param {Array<{value: string, text: string}>} props.modeList Mode list
  * @returns 
  */
 export default function ConfigForm({ onSubmit, onClickDownload, onChangeMode, modeList }) {
-    const [data, setData] = useState({ rows: 0, cols: 0, file: '' })
+    const [data, setData] = useState({ rows: 0, cols: 0, file: undefined })
     const [mode, setMode] = useState(modeList?.[0].value)
 
     useEffect(() => onChangeMode(mode), [mode])
@@ -24,8 +24,8 @@ export default function ConfigForm({ onSubmit, onClickDownload, onChangeMode, mo
                     <input
                         type='number'
                         id='n-rows'
-                        readOnly={data.file !== ''}
-                        disabled={data.file !== ''}
+                        readOnly={data.file !== undefined}
+                        disabled={data.file !== undefined}
                         onChange={e => setData(data => ({ ...data, rows: Number(e.target.value) }))}
                     />
                 </div>
@@ -34,18 +34,18 @@ export default function ConfigForm({ onSubmit, onClickDownload, onChangeMode, mo
                     <input
                         type='number'
                         id='n-cols'
-                        readOnly={data.file !== ''}
-                        disabled={data.file !== ''}
+                        readOnly={data.file !== undefined}
+                        disabled={data.file !== undefined}
                         onChange={e => setData(data => ({ ...data, cols: Number(e.target.value) }))}
                     />
                 </div>
                 <div className='select-file'>
-                    <label htmlFor='terrain-file'>Load terrain from file (.txt)</label>
+                    <label htmlFor='terrain-file'>Load terrain from file (.json)</label>
                     <input
                         type='file'
                         id='terrain-file'
-                        accept='.txt'
-                        onChange={e => setData(data => ({ ...data, file: e.target.value }))}
+                        accept='.json'
+                        onChange={e => setData(data => ({ ...data, file: e.target.files[0] }))}
                     />
                 </div>
                 <div className='select-mode'>
