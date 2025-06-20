@@ -133,6 +133,7 @@ export default function generate(rows, cols, nDirt, hasWeight, acyclic) {
     }
 
     return {
+        robot: 0,       
         adjacency,
         weights,
         dirts,
