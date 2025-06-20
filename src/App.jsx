@@ -7,6 +7,7 @@ import Mode from './js/constants/Mode';
 import alg from './ExampleAlg';
 import generate from './js/algos/generate'
 import dfsAlgo from './js/algos/search-algos/dfs'
+import bfsAlgo from './js/algos/search-algos/bfs'
 
 const robotModeList = [
 	{ value: 'vacuum', text: 'Vacuum' },
@@ -18,12 +19,12 @@ const algorithms = [
 	{ value: 'dijkstra', text: 'Dijkstra\'s Algorithm' },
 ]
 
-const algoPointers = [
-	{ value: 'bfs', algo: alg},
-	{ value: 'dfs', algo: dfsAlgo },
-	{ value: 'astar', algo: alg },
-	{ value: 'dijkstra', algo: alg },
-]
+const algoMap = new Map([
+  ['bfs', bfsAlgo],
+  ['dfs', dfsAlgo],
+  ['astar', alg],
+  ['dijkstra', alg],
+]);
 
 const heuristics = [
 	{ value: '', text: '' },
@@ -96,12 +97,13 @@ export default function App() {
 	// First, generate maze with size 10 x 10 (to match with example result)
 	// Then, click "Solve" button to invoke this function
 	async function handleClickSolve(data) {
-		console.log(data);
-		setMode(Mode.SOLVING)
+		// console.log(data.algorithm);
+		setMode(Mode.SOLVING);
 		// data represent robot_mode, algorithm and heuristic
 
 		// Call solver function
-		const res = dfsAlgo(board, 1000)
+
+		const res = algoMap.get(data.algorithm)(board, 50);
 
 
 		for await (const step of res)

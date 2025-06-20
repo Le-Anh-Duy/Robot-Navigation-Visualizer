@@ -59,7 +59,7 @@ export default function SolverForm({ mode = [], algorithms = [], heuristics = []
                 </div>
                 <div>
                     <label htmlFor='algorithm'>Algorithm</label>
-                    <select id='algorithm'>
+                    <select id='algorithm' onChange={handleAlgorithmChange}>
                         {algorithms.map((e, i) => <option key={i} value={e.value}>{e.text}</option>)}
                     </select>
                 </div>

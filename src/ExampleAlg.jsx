@@ -30,6 +30,7 @@ step[2] = {
 }
 
 export default async function* alg(data, delay = 200) {
+    console.log(data)
     for (const val of step) {
         yield val
         await sleep(delay)
