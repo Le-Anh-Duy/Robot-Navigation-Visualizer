@@ -35,6 +35,10 @@ export default function SolverForm({ mode = [], algorithms = [], heuristics = []
         console.log(e.target)
     }
 
+    function handleAlgorithmChange(e) {
+        setData(data => ({ ...data, algorithm: e.target.value }))
+    }
+
     function handleHeuristicSelectChange(e) {
         setData(data => ({ ...data, heuristic: e.target.value }))
     }
