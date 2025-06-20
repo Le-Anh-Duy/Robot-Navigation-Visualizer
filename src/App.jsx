@@ -8,6 +8,7 @@ import alg from './ExampleAlg';
 import generate from './js/algos/generate'
 import dfsAlgo from './js/algos/search-algos/dfs'
 import bfsAlgo from './js/algos/search-algos/bfs'
+import idaStarAlgo from './js/algos/search-algos/ida-star'
 
 const robotModeList = [
 	{ value: 'vacuum', text: 'Vacuum' },
@@ -17,6 +18,7 @@ const algorithms = [
 	{ value: 'dfs', text: 'Depth-First-Search (DFS)' },
 	{ value: 'astar', text: 'A*' },
 	{ value: 'dijkstra', text: 'Dijkstra\'s Algorithm' },
+	{ value: 'idastar', text: 'Iterative deepening A*' },
 ]
 
 const algoMap = new Map([
@@ -24,6 +26,7 @@ const algoMap = new Map([
   ['dfs', dfsAlgo],
   ['astar', alg],
   ['dijkstra', alg],
+  ['idastar', idaStarAlgo],
 ]);
 
 const heuristics = [
@@ -73,7 +76,7 @@ export default function App() {
 		}
 		else {
 
-			let nData = generate(data.rows, data.cols, 0, 0, 0);
+			let nData = generate(data.rows, data.cols, 3, 1, 0);
 
 			setBoard(board => ({
 				rows: data.rows,
@@ -103,7 +106,7 @@ export default function App() {
 
 		// Call solver function
 
-		const res = algoMap.get(data.algorithm)(board, 50);
+		const res = algoMap.get(data.algorithm)(board, 25);
 
 
 		for await (const step of res)
