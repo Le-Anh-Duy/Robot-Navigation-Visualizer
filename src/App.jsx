@@ -30,6 +30,7 @@ const modeList = [
 
 export default function App() {
 	const [mode, setMode] = useState(Mode.VIEW)
+	const [solverConfig, setSolverConfig] = useState()
 	const [board, setBoard] = useState({
 		rows: 0,
 		cols: 0,
@@ -83,6 +84,7 @@ export default function App() {
 	// First, generate maze with size 10 x 10 (to match with example result)
 	// Then, click "Solve" button to invoke this function
 	async function handleClickSolve(data) {
+		setSolverConfig(data)
 		setMode(Mode.SOLVING)
 		// data represent robot_mode, algorithm and heuristic
 
