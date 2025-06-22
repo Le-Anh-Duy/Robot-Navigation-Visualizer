@@ -9,6 +9,7 @@ import generate from './js/algos/generate'
 import dfsAlgo from './js/algos/search-algos/dfs'
 import bfsAlgo from './js/algos/search-algos/bfs'
 import idaStarAlgo from './js/algos/search-algos/ida-star'
+import multiSourceBfsAlgo from './js/algos/search-algos/multisources-bfs'
 
 const robotModeList = [
 	{ value: 'vacuum', text: 'Vacuum' },
@@ -19,6 +20,7 @@ const algorithms = [
 	{ value: 'astar', text: 'A*' },
 	{ value: 'dijkstra', text: 'Dijkstra\'s Algorithm' },
 	{ value: 'idastar', text: 'Iterative deepening A*' },
+	{ value: 'multisourcebfs', text: 'Multisource-BFS' },
 ]
 
 const algoMap = new Map([
@@ -27,6 +29,7 @@ const algoMap = new Map([
   ['astar', alg],
   ['dijkstra', alg],
   ['idastar', idaStarAlgo],
+  ['multisourcebfs', multiSourceBfsAlgo],
 ]);
 
 const heuristics = [
