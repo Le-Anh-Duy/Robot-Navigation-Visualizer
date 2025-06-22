@@ -1,13 +1,5 @@
 import { sleep } from "../../../utils/utils";
 
-
-// Heuristic: Manhattan distance
-function manhattan(a, b, cols) {
-    const ax = Math.floor(a / cols), ay = a % cols;
-    const bx = Math.floor(b / cols), by = b % cols;
-    return Math.abs(ax - bx) + Math.abs(ay - by);
-}
-
 // TSP heuristic = nearest + MST
 function tspHeuristic(current, unvisited, distMap) {
     if (unvisited.length === 0) return 0;
