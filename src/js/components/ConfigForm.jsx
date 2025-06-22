@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import '../../styles/ConfigForm.css'
+import Mode from '../constants/Mode'
 
 /**
  * @param {Object} props
@@ -9,11 +10,8 @@ import '../../styles/ConfigForm.css'
  * @param {Array<{value: string, text: string}>} props.modeList Mode list
  * @returns 
  */
-export default function ConfigForm({ onSubmit, onClickDownload, onChangeMode, modeList }) {
+export default function ConfigForm({ onSubmit, onClickDownload, onChangeMode, modeList, mode }) {
     const [data, setData] = useState({ rows: 0, cols: 0, file: undefined })
-    const [mode, setMode] = useState(modeList?.[0].value)
-
-    useEffect(() => onChangeMode(mode), [mode])
 
     return (
         <div className='ConfigForm'>
@@ -51,11 +49,31 @@ export default function ConfigForm({ onSubmit, onClickDownload, onChangeMode, mo
                 <div className='select-mode'>
                     <label>
                         Mode
-                        <select onChange={e => onChangeMode(Number(e.target.value))}>
-                            {modeList?.map((e, i) =>
-                                <option key={i} value={e.value}>{e.text}</option>
-                            )}
-                        </select>
+                        {
+                            mode === Mode.SOLVING
+                                ? <p style={{
+                                    all: 'unset',
+                                    textAlign: 'center',
+                                    width: '40%',
+                                    height: '2.5em',
+                                    fontSize: '15px',
+                                    fontWeight: '500',
+                                    lineHeight: '2.5em',
+                                    padding: '0px 0px',
+                                    marginLeft: 'auto',
+                                    border: '1px solid light-dark(#767676, #858585)',
+                                    borderRadius: '2px',
+                                    boxSizing: 'border-box',
+                                    backgroundColor: 'rgb(255, 124, 124)',
+                                }}>
+                                    Solving...
+                                </p>
+                                : <select onChange={e => onChangeMode(Number(e.target.value))}>
+                                    {modeList?.map((e, i) =>
+                                        <option key={i} value={e.value}>{e.text}</option>
+                                    )}
+                                </select>
+                        }
                     </label>
                 </div>
                 <button type='submit' onClick={() => onSubmit(data)}>Generate</button>

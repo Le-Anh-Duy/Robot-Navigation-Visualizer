@@ -12,7 +12,7 @@ var id
  * @param {CanvasRenderingContext2D} props.ctx
  * @returns 
  */
-export default function RobotLayer({ onChange, robot, ctx, canvas, ...props }) {
+export default function RobotLayer({ onChange, robot, ctx, canvas, animTime = 500, ...props }) {
     const robotRef = useRef(null)
 
     if (canvas) {
@@ -63,7 +63,7 @@ export default function RobotLayer({ onChange, robot, ctx, canvas, ...props }) {
         // Calculate position, distance and length of animation
         const pos = canvas.indexToCellCoord(robot)
         const d = { x: pos.x - robotRef.current.x, y: pos.y - robotRef.current.y }
-        const time = 500
+        const time = animTime
 
         const v = { x: d.x / time, y: d.y / time }
 

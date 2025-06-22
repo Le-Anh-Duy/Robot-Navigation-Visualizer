@@ -8,6 +8,8 @@ import WallsLayer from './WallsLayer'
 import EditWallLayer from './EditWallLayer'
 import BackgroundLayer from './BackgroundLayer'
 import SimulationLayer from './SimulationLayer'
+import WeightsLayer from './WeightsLayer'
+import Switch from './Switch'
 
 /**
  * @param {Object} props
@@ -41,6 +43,7 @@ export default function Board({
     }
 
     const [state, setState] = useState({ robot: 0, dirts: new Set(), weights: [], adjacency: [] })
+    const [isShowWeights, setIsShowWeights] = useState(false)
     const width = cols * cellSize, height = rows * cellSize
 
     useEffect(() => {
@@ -55,39 +58,59 @@ export default function Board({
     }, [value])
 
     return (
-        <LayerGroup
-            className='Board'
-            width={`${width}px`}
-            height={`${height}px`}
-            rows={rows}
-            cols={cols}
-            cellSize={cellSize}
-        >
-            <BackgroundLayer />
-            <WallsLayer
-                adjacency={state.adjacency}
-            />
-            <SimulationLayer
-                step={step}
-                disabled={mode !== Mode.SOLVING}
-            />
-            <RobotLayer
-                onChange={robot => updateState(state => ({ ...state, robot: robot }))}
-                robot={state.robot}
-                pointerEvents={mode === Mode.SET_ROBOT}
-            />
-            <DirtsLayer
-                dirts={state.dirts}
-                onChange={dirts => updateState(state => ({ ...state, dirts: dirts }))}
-                pointerEvents={mode === Mode.SET_DIRT}
-            />
-            <EditWallLayer
-                adjacency={state.adjacency}
-                onChange={adj => updateState(state => ({ ...state, adjacency: adj }))}
-                mode={mode}
-                pointerEvents={mode === Mode.DRAW_WALL || mode === Mode.DELETE_WALL}
-            />
-        </LayerGroup>
+        <div style={{
+            display: 'block',
+        }}>
+            <Switch hidden={!rows || !cols} onChange={setIsShowWeights} style={{
+                display: 'flex',
+                marginBottom: '10px',
+            }}>
+                Show weights
+            </Switch>
+            <LayerGroup
+                className='Board'
+                width={`${width}px`}
+                height={`${height}px`}
+                rows={rows}
+                cols={cols}
+                cellSize={cellSize}
+            >
+                <BackgroundLayer />
+                <WallsLayer
+                    adjacency={state.adjacency}
+                />
+                <SimulationLayer
+                    step={step}
+                    setRobot={index => setState(state => ({ ...state, robot: index }))}
+                    disabled={mode !== Mode.SOLVING}
+                />
+                <RobotLayer
+                    onChange={robot => updateState(state => ({ ...state, robot: robot }))}
+                    robot={state.robot}
+                    pointerEvents={mode === Mode.SET_ROBOT}
+                    animTime={mode === Mode.SOLVING ? 10 : 500}
+                />
+                <DirtsLayer
+                    dirts={state.dirts}
+                    onChange={dirts => updateState(state => ({ ...state, dirts: dirts }))}
+                    pointerEvents={mode === Mode.SET_DIRT}
+                />
+                <EditWallLayer
+                    adjacency={state.adjacency}
+                    onChange={adj => updateState(state => ({ ...state, adjacency: adj }))}
+                    mode={mode}
+                    pointerEvents={mode === Mode.DRAW_WALL || mode === Mode.DELETE_WALL}
+                />
+                <WeightsLayer
+                    disabled={!isShowWeights}
+                    weights={Array.from({ length: 100 }, (_, i) => i)}
+                    width={width}
+                    height={height}
+                    rows={rows}
+                    cols={cols}
+                />
+            </LayerGroup>
+        </div>
 
     )
 }

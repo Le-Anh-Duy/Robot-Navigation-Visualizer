@@ -3,6 +3,7 @@ import THEME_COLORS from '../constants/theme'
 import Mode from '../constants/Mode'
 import Layer from '../layer_system/Layer'
 import CanvasHelper from '../layer_system/CanvasHelper'
+import { sleep } from '../utils'
 
 /**
  * @param {Object} props
@@ -10,8 +11,9 @@ import CanvasHelper from '../layer_system/CanvasHelper'
  * @param {CanvasRenderingContext2D} props.ctx
  * @returns 
  */
-export default function SimulationLayer({ step, ctx, canvas, ...props }) {
+export default function SimulationLayer({ step, ctx, canvas, setRobot, ...props }) {
     const rows = canvas.rows, cols = canvas.cols, cellSize = canvas.cellSize
+    const [len, setLen] = useState(0)
 
     function update(deltaTime) {
         if (props.disabled) {
@@ -19,15 +21,9 @@ export default function SimulationLayer({ step, ctx, canvas, ...props }) {
             return
         }
 
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-        drawVisitedCells(deltaTime)
-        drawFrontierCells(deltaTime)
-        drawCurrentProcessingCell(deltaTime)
-        drawPath(deltaTime)
     }
 
-    function drawVisitedCells(deltaTime) {
+    function drawVisitedCells() {
         ctx.save()
         ctx.fillStyle = THEME_COLORS.visitedCell
         for (const index of step.visited) {
@@ -37,7 +33,7 @@ export default function SimulationLayer({ step, ctx, canvas, ...props }) {
         ctx.restore()
     }
 
-    function drawFrontierCells(deltaTime) {
+    function drawFrontierCells() {
         ctx.save()
         ctx.fillStyle = THEME_COLORS.frontierCell
         for (const index of step.frontier) {
@@ -47,7 +43,7 @@ export default function SimulationLayer({ step, ctx, canvas, ...props }) {
         ctx.restore()
     }
 
-    function drawCurrentProcessingCell(deltaTime) {
+    function drawCurrentProcessingCell() {
         ctx.save()
         ctx.fillStyle = THEME_COLORS.currentProcessingCell
         const p = canvas.indexToCellCoord(step.current)
@@ -55,7 +51,7 @@ export default function SimulationLayer({ step, ctx, canvas, ...props }) {
         ctx.restore()
     }
 
-    function drawPath(deltaTime, delay = 20) {
+    async function drawPath(delay = 20) {
         if (step.type !== 'found')
             return
 
@@ -66,19 +62,29 @@ export default function SimulationLayer({ step, ctx, canvas, ...props }) {
 
         ctx.save()
         ctx.fillStyle = THEME_COLORS.solutionPath
-        drawPath.time += deltaTime
-        if (drawPath.time >= delay) {
-            drawPath.len++
-            drawPath.time = 0
-        }
 
-        for (var i = 0; i < drawPath.len; i++) {
+        for (var i = 0; i < step.path.length; i++) {
             const p = canvas.indexToCellCoord(step.path[i])
             ctx.fillRect(p.x, p.y, cellSize, cellSize)
+            setRobot?.(step.path[i])
+            await sleep(delay)
         }
         ctx.restore()
     }
 
+    useEffect(() => {
+        if (!ctx)
+            return
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+        drawVisitedCells()
+        drawFrontierCells()
+        drawCurrentProcessingCell()
+        drawPath()
+    }, [step, len])
+
+    var id
     useEffect(() => {
         if (!ctx)
             return
@@ -92,10 +98,10 @@ export default function SimulationLayer({ step, ctx, canvas, ...props }) {
             lastTime = currentTime
             update(deltaTime)
 
-            requestAnimationFrame(anim)
+            id = requestAnimationFrame(anim)
         }
-
-        requestAnimationFrame(anim)
+        if (id) cancelAnimationFrame(id)
+        id = requestAnimationFrame(anim)
     }, [ctx, canvas])
 
     return (

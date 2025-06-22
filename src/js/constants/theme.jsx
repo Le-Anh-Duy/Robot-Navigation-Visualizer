@@ -17,7 +17,7 @@ const THEME_COLORS = {
     previewPointFlare2: 'rgba(255, 137, 137, 0.3)',
     previewPointThickness: 6,
     weightText: 'rgba(0,0,0,0.7)',
-    solutionPath: 'rgba(0, 255, 0, 0.7)',
+    solutionPath: 'rgba(0, 255, 0, 0.5)',
     visitedCell: 'rgba(173, 216, 230, 0.5)',
     frontierCell: 'rgba(211, 211, 211, 0.5)',
     currentProcessingCell: 'rgba(255, 165, 0, 0.7)',

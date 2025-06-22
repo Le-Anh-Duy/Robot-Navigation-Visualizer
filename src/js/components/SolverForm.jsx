@@ -14,7 +14,7 @@ import '../../styles/SolverForm.css'
  * @returns
  */
 export default function SolverForm({ mode = [], algorithms = [], heuristics = [],
-    minSpeed = 0, maxSpeed = 1000, onChange, onClickSolve, onClickRanking
+    minSpeed = 0, maxSpeed = 1000, onChange, onClickSolve, onClickCancelSolve, onClickRanking
 }) {
     const [data, setData] = useState({
         mode: '',
@@ -23,6 +23,7 @@ export default function SolverForm({ mode = [], algorithms = [], heuristics = []
         speed: 50,
     })
     const selectRef = useRef(null)
+    const [isSolving, setIsSolving] = useState(false)
 
     useEffect(() => onChange?.(data), [data])
 
@@ -59,7 +60,7 @@ export default function SolverForm({ mode = [], algorithms = [], heuristics = []
                 </div>
                 <div>
                     <label htmlFor='algorithm'>Algorithm</label>
-                    <select id='algorithm'>
+                    <select id='algorithm' onChange={handleAlgorithmChange}>
                         {algorithms.map((e, i) => <option key={i} value={e.value}>{e.text}</option>)}
                     </select>
                 </div>
@@ -83,7 +84,17 @@ export default function SolverForm({ mode = [], algorithms = [], heuristics = []
                     <input id='speed' type='range' min={minSpeed} max={maxSpeed} value={data.speed} onChange={handleSpeedChange} />
                 </div>
                 <div className='button-field'>
-                    <button onClick={() => onClickSolve?.(data)}>Solve</button>
+                    <button onClick={() => {
+                        setIsSolving(isSolving => !isSolving)
+                        if (!isSolving)
+                            onClickSolve?.(data)
+                        else
+                            onClickCancelSolve?.()
+                    }} style={{
+                        ...(isSolving && { backgroundColor: 'rgb(255, 100, 100)' })
+                    }}>
+                        {isSolving ? 'Cancel' : 'Solve'}
+                    </button>
                     <button onClick={onClickRanking}>See your ranking</button>
                 </div>
             </fieldset>

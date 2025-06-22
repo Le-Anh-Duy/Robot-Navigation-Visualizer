@@ -94,6 +94,10 @@ export default function App() {
 			setStep(step)
 	}
 
+	function handleClickCancelSolve() {
+		setMode(Mode.VIEW)
+	}
+
 	return (
 		<div className='App'>
 			<div className='controls'>
@@ -102,12 +106,14 @@ export default function App() {
 					onChangeMode={m => setMode(m)}
 					onSubmit={handleConfigFormSubmit}
 					onClickDownload={handleDownloadFile}
+					mode={mode}
 				/>
 				<SolverForm
 					mode={robotModeList}
 					algorithms={algorithms}
 					heuristics={heuristics}
 					onClickSolve={handleClickSolve}
+					onClickCancelSolve={handleClickCancelSolve}
 				/>
 			</div>
 			<div className='board'>

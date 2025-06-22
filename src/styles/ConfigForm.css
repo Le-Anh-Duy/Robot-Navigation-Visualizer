@@ -49,6 +49,7 @@
 
         select {
             text-align: center;
+            width: 40%;
             height: 2.5em;
             font-size: 15px;
             padding: 0px 10px;
