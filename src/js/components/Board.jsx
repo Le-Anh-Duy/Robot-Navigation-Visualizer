@@ -81,6 +81,7 @@ export default function Board({
                 />
                 <SimulationLayer
                     step={step}
+                    initRobot={value?.robot}
                     setRobot={index => setState(state => ({ ...state, robot: index }))}
                     disabled={mode !== Mode.SOLVING}
                 />
@@ -103,7 +104,7 @@ export default function Board({
                 />
                 <WeightsLayer
                     disabled={!isShowWeights}
-                    weights={Array.from({ length: 100 }, (_, i) => i)}
+                    weights={state.weights}
                     width={width}
                     height={height}
                     rows={rows}
