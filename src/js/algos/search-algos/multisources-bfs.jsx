@@ -1,120 +1,176 @@
 import { sleep } from "../../../utils/utils";
 
-function getNeighbors(cell, rows, cols, adjacency) {
-    const neighbors = [];
-    const walls = adjacency[cell]; // [top, right, bottom, left]
+/**
+ * Hàm BFS đơn giản từ 1 điểm tới toàn bộ lưới, trả về khoảng cách.
+ */
+function bfsDistances(start, rows, cols, adjacency, weights) {
+    const dist = Array(rows * cols).fill(Infinity);
+    const visited = new Set();
+    const queue = [[start, 0]];
 
-    if (!walls[0] && cell >= cols) neighbors.push(cell - cols);
-    if (!walls[1] && (cell + 1) % cols !== 0) neighbors.push(cell + 1);
-    if (!walls[2] && cell < (rows - 1) * cols) neighbors.push(cell + cols);
-    if (!walls[3] && cell % cols !== 0) neighbors.push(cell - 1);
+    dist[start] = 0;
 
-    return neighbors;
+    while (queue.length > 0) {
+        const [current, d] = queue.shift();
+        if (visited.has(current)) continue;
+        visited.add(current);
+
+        const walls = adjacency[current];
+        const directions = [
+            { dr: -1, dc: 0, wall: 0 },
+            { dr: 0, dc: 1, wall: 1 },
+            { dr: 1, dc: 0, wall: 2 },
+            { dr: 0, dc: -1, wall: 3 }
+        ];
+
+        for (const { dr, dc, wall } of directions) {
+            if (!walls[wall]) {
+                const r = Math.floor(current / cols) + dr;
+                const c = current % cols + dc;
+                if (r >= 0 && r < rows && c >= 0 && c < cols) {
+                    const neighbor = r * cols + c;
+                    const cost = weights[neighbor];
+                    if (d + cost < dist[neighbor]) {
+                        dist[neighbor] = d + cost;
+                        queue.push([neighbor, d + cost]);
+                    }
+                }
+            }
+        }
+    }
+
+    return dist;
 }
 
-export default async function* multiSourceBFS(boardData, delay = 200) {
-    const allSteps = [];
+/**
+ * TSP Backtracking trên tập các điểm [start, dirt1, dirt2, ...]
+ */
+function tspBacktrack(distMap, points, currentIdx, visitedSet, currentCost, pathSoFar, best) {
+    if (visitedSet.size === points.length) {
+        if (currentCost < best.cost) {
+            best.cost = currentCost;
+            best.path = [...pathSoFar];
+        }
+        return;
+    }
+
+    for (let i = 1; i < points.length; i++) {
+        if (!visitedSet.has(i)) {
+            visitedSet.add(i);
+            pathSoFar.push(i);
+            const nextCost = currentCost + distMap[points[currentIdx]][points[i]];
+            if (nextCost < best.cost) {
+                tspBacktrack(distMap, points, i, visitedSet, nextCost, pathSoFar, best);
+            }
+            pathSoFar.pop();
+            visitedSet.delete(i);
+        }
+    }
+}
+
+/**
+ * Multiple BFS + Backtrack để tìm thứ tự đi qua các điểm bẩn tối ưu.
+ */
+export default async function* multiBfsBacktrack(boardData, delay = 200) {
     const { rows, cols, data } = boardData;
-    const { robot: startNode, adjacency, dirts } = data;
+    const { robot: start, dirts, adjacency, weights } = data;
+    const allPoints = [start, ...dirts];
+    const pointIndices = allPoints; // map: index => cell
 
-    const totalDirts = dirts.length;
+    const distMap = {};
+    for (const p of allPoints) {
+        distMap[p] = bfsDistances(p, rows, cols, adjacency, weights);
+    }
 
-    if (totalDirts === 0) {
-        allSteps.push({
-            type: 'found',
-            visited: new Set([startNode]),
-            frontier: new Set(),
-            current: startNode,
-            path: [startNode],
-            cost: 0,
-        });
-    } else {
-        const queue = [];
-        const visitedStates = new Set();
+    // yield start step
+    yield {
+        type: 'start',
+        visited: new Set(),
+        frontier: new Set([start]),
+        current: start,
+        path: [],
+        cost: 0
+    };
 
-        // Mỗi trạng thái: [vị trí hiện tại, đường đi, tập hợp ô bẩn đã đi qua]
-        const initialState = [startNode, [startNode], new Set()];
-        queue.push(initialState);
+    await sleep(delay);
 
-        const initialKey = `${startNode}-`;
-        visitedStates.add(initialKey);
+    // TSP backtrack từ start (index 0)
+    const best = { cost: Infinity, path: [] };
+    tspBacktrack(distMap, allPoints, 0, new Set([0]), 0, [0], best);
 
-        allSteps.push({
-            type: 'start',
-            visited: new Set(),
-            frontier: new Set([startNode]),
-            current: startNode,
-            path: [],
-            cost: 0,
-        });
+    // reconstruct full path in the grid
+    const fullPath = [];
+    let totalCost = 0;
+    for (let i = 0; i < best.path.length - 1; i++) {
+        const from = allPoints[best.path[i]];
+        const to = allPoints[best.path[i + 1]];
 
-        const dirtsSet = new Set(dirts);
-        const processedCells = new Set();
-        let solutionFound = false;
+        // reconstruct actual path step-by-step (BFS-based)
+        const prev = Array(rows * cols).fill(null);
+        const queue = [from];
+        const visited = new Set([from]);
 
         while (queue.length > 0) {
-            const [current, path, visitedDirts] = queue.shift();
-            processedCells.add(current);
+            const current = queue.shift();
+            if (current === to) break;
 
-            const frontierSet = new Set(queue.map(item => item[0]));
-            allSteps.push({
-                type: 'processing',
-                visited: new Set(processedCells),
-                frontier: frontierSet,
-                current,
-                path,
-                cost: path.length - 1,
-            });
+            const neighbors = [];
+            const walls = adjacency[current];
+            const directions = [
+                { dr: -1, dc: 0, wall: 0 },
+                { dr: 0, dc: 1, wall: 1 },
+                { dr: 1, dc: 0, wall: 2 },
+                { dr: 0, dc: -1, wall: 3 }
+            ];
 
-            const newVisitedDirts = new Set(visitedDirts);
-            if (dirtsSet.has(current)) {
-                newVisitedDirts.add(current);
-            }
-
-            if (newVisitedDirts.size === totalDirts) {
-                allSteps.push({
-                    type: 'found',
-                    visited: new Set(processedCells),
-                    frontier: frontierSet,
-                    current,
-                    path,
-                    cost: path.length - 1,
-                });
-                solutionFound = true;
-                break;
-            }
-
-            const neighbors = getNeighbors(current, rows, cols, adjacency);
-            for (const neighbor of neighbors) {
-                const newPath = [...path, neighbor];
-                const updatedDirts = new Set(newVisitedDirts);
-                if (dirtsSet.has(neighbor)) updatedDirts.add(neighbor);
-
-                const dirtsKey = [...updatedDirts].sort((a, b) => a - b).join(',');
-                const stateKey = `${neighbor}-${dirtsKey}`;
-
-                if (!visitedStates.has(stateKey)) {
-                    visitedStates.add(stateKey);
-                    queue.push([neighbor, newPath, updatedDirts]);
+            for (const { dr, dc, wall } of directions) {
+                if (!walls[wall]) {
+                    const r = Math.floor(current / cols) + dr;
+                    const c = current % cols + dc;
+                    if (r >= 0 && r < rows && c >= 0 && c < cols) {
+                        const neighbor = r * cols + c;
+                        if (!visited.has(neighbor)) {
+                            visited.add(neighbor);
+                            prev[neighbor] = current;
+                            queue.push(neighbor);
+                        }
+                    }
                 }
             }
         }
 
-        if (!solutionFound) {
-            allSteps.push({
-                type: 'not_found',
-                visited: new Set(processedCells),
+        // build path
+        const subPath = [];
+        let curr = to;
+        while (curr !== null && curr !== from) {
+            subPath.push(curr);
+            curr = prev[curr];
+        }
+        subPath.push(from);
+        subPath.reverse();
+
+        for (const step of subPath.slice(i === 0 ? 0 : 1)) {
+            fullPath.push(step);
+            totalCost += weights[step];
+
+            yield {
+                type: 'processing',
+                visited: new Set(fullPath),
                 frontier: new Set(),
-                current: null,
-                path: [],
-                cost: -1,
-                message: 'No path found to clean all dirts.',
-            });
+                current: step,
+                path: [...fullPath],
+                cost: totalCost
+            };
+            await sleep(delay);
         }
     }
 
-    for (const step of allSteps) {
-        yield step;
-        await sleep(delay);
-    }
+    yield {
+        type: 'found',
+        visited: new Set(fullPath),
+        frontier: new Set(),
+        current: fullPath.at(-1),
+        path: fullPath,
+        cost: totalCost
+    };
 }
