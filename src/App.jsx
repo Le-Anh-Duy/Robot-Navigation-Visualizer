@@ -47,6 +47,7 @@ const modeList = [
 
 export default function App() {
 	const [mode, setMode] = useState(Mode.VIEW)
+	const [solverConfig, setSolverConfig] = useState()
 	const [board, setBoard] = useState({
 		rows: 0,
 		cols: 0,
@@ -103,8 +104,8 @@ export default function App() {
 	// First, generate maze with size 10 x 10 (to match with example result)
 	// Then, click "Solve" button to invoke this function
 	async function handleClickSolve(data) {
-		// console.log(data.algorithm);
-		setMode(Mode.SOLVING);
+		setSolverConfig(data)
+		setMode(Mode.SOLVING)
 		// data represent robot_mode, algorithm and heuristic
 
 		// Call solver function
@@ -116,6 +117,10 @@ export default function App() {
 			setStep(step)
 	}
 
+	function handleClickCancelSolve() {
+		setMode(Mode.VIEW)
+	}
+
 	return (
 		<div className='App'>
 			<div className='controls'>
@@ -124,12 +129,14 @@ export default function App() {
 					onChangeMode={m => setMode(m)}
 					onSubmit={handleConfigFormSubmit}
 					onClickDownload={handleDownloadFile}
+					mode={mode}
 				/>
 				<SolverForm
 					mode={robotModeList}
 					algorithms={algorithms}
 					heuristics={heuristics}
 					onClickSolve={handleClickSolve}
+					onClickCancelSolve={handleClickCancelSolve}
 				/>
 			</div>
 			<div className='board'>
