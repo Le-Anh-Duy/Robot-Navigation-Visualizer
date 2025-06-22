@@ -12,7 +12,8 @@ dirtImg.src = './dirt.svg'
  * @returns 
  */
 export default function DirtsLayer({ dirts, onChange, ctx, canvas, ...props }) {
-    const dirtsRef = useRef(new Map([...dirts.entries()].map(value => [value, undefined])))
+    console.log(dirts)
+    const dirtsRef = useRef(new Map([...dirts].map(value => [value, undefined])))
 
     class Dirt {
         constructor(x, y, padding = { top: 5, right: 5, bottom: 5, left: 5 }) {
@@ -50,7 +51,7 @@ export default function DirtsLayer({ dirts, onChange, ctx, canvas, ...props }) {
         else
             dirtsRef.current.set(cellIndex, new Dirt(pos.x, pos.y))
 
-        onChange?.([...dirtsRef.current.entries()].map(([key, value]) => (value && key)))
+        onChange?.(new Set([...dirtsRef.current.entries()].map(([key, value]) => (value && key))))
     }
 
     function update(deltaTime) {

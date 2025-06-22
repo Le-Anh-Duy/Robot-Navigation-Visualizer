@@ -11,12 +11,13 @@ import { sleep } from '../utils'
  * @param {CanvasRenderingContext2D} props.ctx
  * @returns 
  */
-export default function SimulationLayer({ step, ctx, canvas, initRobot = 0, setRobot, ...props }) {
+export default function SimulationLayer({ step, ctx, canvas, initRobot = 0, setRobot, initDirts = new Set(), setDirts, ...props }) {
     const rows = canvas.rows, cols = canvas.cols, cellSize = canvas.cellSize
     const [len, setLen] = useState(0)
 
     useEffect(() => {
         setRobot(initRobot)
+        setDirts(initDirts)
     }, [props.disabled])
 
     function update(deltaTime) {
@@ -71,6 +72,11 @@ export default function SimulationLayer({ step, ctx, canvas, initRobot = 0, setR
             const p = canvas.indexToCellCoord(step.path[i])
             ctx.fillRect(p.x, p.y, cellSize, cellSize)
             setRobot?.(step.path[i])
+            if (initDirts?.has(step.path[i])) {
+                const newDirts = new Set(initDirts)
+                newDirts.delete(step.path[i])
+                setDirts(newDirts)
+            }
             await sleep(delay)
         }
         ctx.restore()

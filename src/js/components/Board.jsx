@@ -55,6 +55,8 @@ export default function Board({
     useEffect(() => {
         if (value)
             setState(value)
+        else
+            onChange?.(state)
     }, [value])
 
     return (
@@ -82,7 +84,9 @@ export default function Board({
                 <SimulationLayer
                     step={step}
                     initRobot={value?.robot}
-                    setRobot={index => setState(state => ({ ...state, robot: index }))}
+                    setRobot={robot => setState(state => ({ ...state, robot: robot }))}
+                    initDirts={value?.dirts}
+                    setDirts={dirts => setState(state => ({ ...state, dirts: dirts }))}
                     disabled={mode !== Mode.SOLVING}
                 />
                 <RobotLayer
