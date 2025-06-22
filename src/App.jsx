@@ -10,6 +10,10 @@ import dfsAlgo from './js/algos/search-algos/dfs'
 import bfsAlgo from './js/algos/search-algos/bfs'
 import idaStarAlgo from './js/algos/search-algos/ida-star'
 import multiSourceBfsAlgo from './js/algos/search-algos/multisources-bfs'
+import ucsAlgo from './js/algos/search-algos/ucs'
+import aStar from './js/algos/search-algos/astar'
+import iddfs from './js/algos/search-algos/iddfs'
+import beamSearch from './js/algos/search-algos/beam_search'
 
 const robotModeList = [
 	{ value: 'vacuum', text: 'Vacuum' },
@@ -18,18 +22,22 @@ const algorithms = [
 	{ value: 'bfs', text: 'Breadth-First-Search (BFS)' },
 	{ value: 'dfs', text: 'Depth-First-Search (DFS)' },
 	{ value: 'astar', text: 'A*' },
-	{ value: 'dijkstra', text: 'Dijkstra\'s Algorithm' },
+	{ value: 'ucs', text: 'Uniform-cost search' },
 	{ value: 'idastar', text: 'Iterative deepening A*' },
 	{ value: 'multisourcebfs', text: 'Multisource-BFS' },
+	{ value: 'iddfs', text: 'Iterative deepening depth-first search' },
+	{ value: 'beamsearch', text: 'Beam Search' },
 ]
 
 const algoMap = new Map([
   ['bfs', bfsAlgo],
   ['dfs', dfsAlgo],
-  ['astar', alg],
-  ['dijkstra', alg],
+  ['astar', aStar],
+  ['ucs', ucsAlgo],
   ['idastar', idaStarAlgo],
   ['multisourcebfs', multiSourceBfsAlgo],
+  ['iddfs', iddfs],
+  ['beamsearch', beamSearch],
 ]);
 
 const heuristics = [
@@ -104,6 +112,8 @@ export default function App() {
 	// First, generate maze with size 10 x 10 (to match with example result)
 	// Then, click "Solve" button to invoke this function
 	async function handleClickSolve(data) {
+		// console.log(data.algorithm);
+		// setMode(Mode.SOLVING);
 		setSolverConfig(data)
 		setMode(Mode.SOLVING)
 		// data represent robot_mode, algorithm and heuristic

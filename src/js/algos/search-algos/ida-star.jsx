@@ -199,11 +199,11 @@ export default async function* idaTSP(boardData, delay = 200) {
         await sleep(delay);
     }
 
-    if (finalPath.length > 0) {
-        yield {
-            type: 'result',
-            path: finalPath,
-            message: 'Final TSP path covering all dirty points'
-        };
-    }
+    // if (finalPath.length > 0) {
+    //     yield {
+    //         type: 'result',
+    //         path: finalPath,
+    //         message: 'Final TSP path covering all dirty points'
+    //     };
+    // }
 }
