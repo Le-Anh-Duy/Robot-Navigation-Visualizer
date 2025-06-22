@@ -81,6 +81,7 @@ export default function Board({
                 />
                 <SimulationLayer
                     step={step}
+                    initRobot={value?.robot}
                     setRobot={index => setState(state => ({ ...state, robot: index }))}
                     disabled={mode !== Mode.SOLVING}
                 />

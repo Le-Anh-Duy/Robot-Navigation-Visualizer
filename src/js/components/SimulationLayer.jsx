@@ -11,9 +11,13 @@ import { sleep } from '../utils'
  * @param {CanvasRenderingContext2D} props.ctx
  * @returns 
  */
-export default function SimulationLayer({ step, ctx, canvas, setRobot, ...props }) {
+export default function SimulationLayer({ step, ctx, canvas, initRobot = 0, setRobot, ...props }) {
     const rows = canvas.rows, cols = canvas.cols, cellSize = canvas.cellSize
     const [len, setLen] = useState(0)
+
+    useEffect(() => {
+        setRobot(initRobot)
+    }, [props.disabled])
 
     function update(deltaTime) {
         if (props.disabled) {
