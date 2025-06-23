@@ -165,6 +165,7 @@ export default function EditWallLayer({ onChange, adjacency, mode, ctx, canvas, 
             setAdj(adjacency)
     }, [adjacency])
 
+    var id
     useEffect(() => {
         if (!ctx)
             return
@@ -178,10 +179,13 @@ export default function EditWallLayer({ onChange, adjacency, mode, ctx, canvas, 
             lastTime = currentTime
             update(deltaTime)
 
-            requestAnimationFrame(anim)
+            id = requestAnimationFrame(anim)
         }
 
-        requestAnimationFrame(anim)
+        if (id)
+            cancelAnimationFrame(id)
+
+        id = requestAnimationFrame(anim)
     }, [ctx, mode])
 
     return (

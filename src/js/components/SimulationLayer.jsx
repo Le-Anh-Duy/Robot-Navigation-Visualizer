@@ -116,7 +116,10 @@ export default function SimulationLayer({ step, ctx, canvas, initRobot = 0, setR
 
             id = requestAnimationFrame(anim)
         }
-        if (id) cancelAnimationFrame(id)
+
+        if (id)
+            cancelAnimationFrame(id)
+
         id = requestAnimationFrame(anim)
     }, [ctx, canvas])
 
