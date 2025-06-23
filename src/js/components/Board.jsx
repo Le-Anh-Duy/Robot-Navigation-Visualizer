@@ -109,7 +109,7 @@ export default function Board({
                 />
                 <WeightsLayer
                     disabled={!isShowWeights}
-                    weights={Array.from({ length: 100 }, (_, i) => i)}
+                    weights={state.weights}
                     width={width}
                     height={height}
                     rows={rows}
