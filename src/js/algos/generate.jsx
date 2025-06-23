@@ -123,7 +123,7 @@ export default function generate(rows, cols, nDirt, hasWeight, acyclic) {
     if (hasWeight) {
         // Ensure that weights are non-negative and not too high
         for (let i = 0; i < weights.length; i++) {
-            weights[i] = Math.max(1, Math.min(Math.round(weights[i] * 5) + 1, 10)); // Scale to 1-10 integer weights
+            weights[i] = Math.max(1, Math.min(Math.round(weights[i]) + 1, 10)); // Scale to 1-10 integer weights
         }
     } else {
         // If no weights are requested, set all weights to 1

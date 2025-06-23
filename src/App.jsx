@@ -9,7 +9,7 @@ import generate from './js/algos/generate'
 import dfsAlgo from './js/algos/search-algos/dfs'
 import bfsAlgo from './js/algos/search-algos/bfs'
 import idaStarAlgo from './js/algos/search-algos/ida-star'
-import multiSourceBfsAlgo from './js/algos/search-algos/multisources-bfs'
+import pas from './js/algos/search-algos/pas'
 import ucsAlgo from './js/algos/search-algos/ucs'
 import aStar from './js/algos/search-algos/astar'
 import iddfs from './js/algos/search-algos/iddfs'
@@ -24,7 +24,7 @@ const algorithms = [
 	{ value: 'astar', text: 'A*' },
 	{ value: 'ucs', text: 'Uniform-cost search' },
 	{ value: 'idastar', text: 'Iterative deepening A*' },
-	{ value: 'multisourcebfs', text: 'Multisource-BFS' },
+	{ value: 'pas', text: 'Precomputation and Iterative Search' },
 	{ value: 'iddfs', text: 'Iterative deepening depth-first search' },
 	{ value: 'beamsearch', text: 'Beam Search' },
 ]
@@ -35,7 +35,7 @@ const algoMap = new Map([
   ['astar', aStar],
   ['ucs', ucsAlgo],
   ['idastar', idaStarAlgo],
-  ['multisourcebfs', multiSourceBfsAlgo],
+  ['pas', pas],
   ['iddfs', iddfs],
   ['beamsearch', beamSearch],
 ]);
@@ -114,13 +114,14 @@ export default function App() {
 	async function handleClickSolve(data) {
 		// console.log(data.algorithm);
 		// setMode(Mode.SOLVING);
+		console.log(data)
 		setSolverConfig(data)
 		setMode(Mode.SOLVING)
 		// data represent robot_mode, algorithm and heuristic
 
 		// Call solver function
 
-		const res = algoMap.get(data.algorithm)(board, 25);
+		const res = algoMap.get(data.algorithm)(board, data.speed);
 
 
 		for await (const step of res)
