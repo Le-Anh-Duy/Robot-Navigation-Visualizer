@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Board from './js/components/Board';
 import ConfigForm from './js/components/ConfigForm';
 import SolverForm from './js/components/SolverForm';
 import './styles/App.css'
 import Mode from './js/constants/Mode';
 import alg from './ExampleAlg';
+import { flushSync } from 'react-dom';
 
 const robotModeList = [
 	{ value: 'vacuum', text: 'Vacuum' },
@@ -30,7 +31,12 @@ const modeList = [
 
 export default function App() {
 	const [mode, setMode] = useState(Mode.VIEW)
-	const [solverConfig, setSolverConfig] = useState()
+	const [solverConfig, setSolverConfig] = useState(useState({
+		mode: '',
+		algorithm: '',
+		heuristic: '',
+		speed: 50,
+	}))
 	const [board, setBoard] = useState({
 		rows: 0,
 		cols: 0,
@@ -44,6 +50,7 @@ export default function App() {
 		path: [],
 		cost: 0,
 	})
+	const isSolving = useRef(false)
 
 	function handleConfigFormSubmit(data) {
 		if (data.file) {
@@ -86,16 +93,21 @@ export default function App() {
 	async function handleClickSolve(data) {
 		setSolverConfig(data)
 		setMode(Mode.SOLVING)
+		isSolving.current = true
 		// data represent robot_mode, algorithm and heuristic
-
 		// Call solver function
 		const res = alg(data, 1000)
-		for await (const step of res)
+		for await (const step of res) {
+			if (!isSolving.current)
+				break
+
 			setStep(step)
+		}
 	}
 
 	function handleClickCancelSolve() {
 		setMode(Mode.VIEW)
+		isSolving.current = false
 	}
 
 	return (
@@ -112,6 +124,7 @@ export default function App() {
 					mode={robotModeList}
 					algorithms={algorithms}
 					heuristics={heuristics}
+					onChange={setSolverConfig}
 					onClickSolve={handleClickSolve}
 					onClickCancelSolve={handleClickCancelSolve}
 				/>
@@ -124,6 +137,7 @@ export default function App() {
 					value={board.data}
 					mode={mode}
 					step={step}
+					animSpeed={solverConfig.speed}
 					onChange={data => {
 						setBoard(board => ({ ...board, data: data }))
 					}}

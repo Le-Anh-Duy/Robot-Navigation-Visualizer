@@ -11,13 +11,15 @@ import { sleep } from '../utils'
  * @param {CanvasRenderingContext2D} props.ctx
  * @returns 
  */
-export default function SimulationLayer({ step, ctx, canvas, initRobot = 0, setRobot, initDirts = new Set(), setDirts, ...props }) {
+export default function SimulationLayer({ step, ctx, canvas, initRobot = 0, setRobot, initDirts = new Set(), setDirts, animSpeed, ...props }) {
     const rows = canvas.rows, cols = canvas.cols, cellSize = canvas.cellSize
     const [len, setLen] = useState(0)
+    const isSolving = useRef(false)
 
     useEffect(() => {
         setRobot(initRobot)
         setDirts(initDirts)
+        isSolving.current = !props.disabled
     }, [props.disabled])
 
     function update(deltaTime) {
@@ -56,7 +58,7 @@ export default function SimulationLayer({ step, ctx, canvas, initRobot = 0, setR
         ctx.restore()
     }
 
-    async function drawPath(delay = 20) {
+    async function drawPath() {
         if (step.type !== 'found')
             return
 
@@ -68,7 +70,7 @@ export default function SimulationLayer({ step, ctx, canvas, initRobot = 0, setR
         ctx.save()
         ctx.fillStyle = THEME_COLORS.solutionPath
 
-        for (var i = 0; i < step.path.length; i++) {
+        for (var i = 0; i < step.path.length && isSolving.current; i++) {
             const p = canvas.indexToCellCoord(step.path[i])
             ctx.fillRect(p.x, p.y, cellSize, cellSize)
             setRobot?.(step.path[i])
@@ -77,7 +79,7 @@ export default function SimulationLayer({ step, ctx, canvas, initRobot = 0, setR
                 newDirts.delete(step.path[i])
                 setDirts(newDirts)
             }
-            await sleep(delay)
+            await sleep(animSpeed)
         }
         ctx.restore()
     }

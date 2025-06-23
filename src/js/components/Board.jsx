@@ -30,6 +30,7 @@ export default function Board({
     value,
     mode = Mode.VIEW,
     step = { type: '', visited: new Set(), frontier: new Set(), current: -1, path: [], cost: 0 },
+    animSpeed,
     onChange,
 }) {
     function updateState(updater) {
@@ -87,6 +88,7 @@ export default function Board({
                     setRobot={robot => setState(state => ({ ...state, robot: robot }))}
                     initDirts={value?.dirts}
                     setDirts={dirts => setState(state => ({ ...state, dirts: dirts }))}
+                    animSpeed={animSpeed}
                     disabled={mode !== Mode.SOLVING}
                 />
                 <RobotLayer
