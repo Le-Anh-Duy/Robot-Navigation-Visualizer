@@ -23,6 +23,7 @@ export default function SimulationLayer({ step, ctx, canvas, initRobot = 0, setR
         setRobot(initRobot)
         setDirts(initDirts)
         isSolving.current = !props.disabled
+        dirts.current = new Set(initDirts)
     }, [props.disabled])
 
     function update(deltaTime) {
