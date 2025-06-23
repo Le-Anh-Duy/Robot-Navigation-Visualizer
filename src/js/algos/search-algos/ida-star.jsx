@@ -136,7 +136,7 @@ export default async function* idaTSP(boardData, delay = 200) {
             const f = g + h;
 
             const frontier = new Set(stack.map(s => s[0]));
-            const step = {
+            allSteps.push({
                 type: sequence.length === 1 ? 'start' : 'processing',
                 visited: new Set([...totalVisited, ...visited]),
                 frontier,
@@ -145,8 +145,7 @@ export default async function* idaTSP(boardData, delay = 200) {
                 cost: g,
                 f_cost: f,
                 threshold
-            };
-            allSteps.push(step);
+            });
 
             totalVisited.add(current);
 
@@ -157,15 +156,12 @@ export default async function* idaTSP(boardData, delay = 200) {
 
             if (visitedAll(visited)) {
                 let fullPath = [];
+
                 for (let i = 0; i < sequence.length - 1; i++) {
                     const from = sequence[i];
                     const to = sequence[i + 1];
                     const subPath = reconstructPath(prevMap[from], from, to);
-                    if (i === 0) {
-                        fullPath = [...subPath];
-                    } else {
-                        fullPath.push(...subPath.slice(1));
-                    }
+                    fullPath.push(...(i === 0 ? subPath : subPath.slice(1)));
                 }
 
                 finalPath = fullPath;
@@ -173,11 +169,12 @@ export default async function* idaTSP(boardData, delay = 200) {
                 allSteps.push({
                     type: 'found',
                     visited: new Set([...totalVisited, ...visited]),
-                    frontier: new Set(stack.map(s => s[0])),
-                    current,
+                    frontier: new Set(),
+                    current: fullPath.at(-1),
                     path: fullPath,
                     cost: g
                 });
+
                 found = true;
                 break;
             }
@@ -187,6 +184,24 @@ export default async function* idaTSP(boardData, delay = 200) {
                 newVisited.add(next);
                 const newSequence = [...sequence, next];
                 const newG = g + distMap[current][next];
+
+                let constructedPath = [];
+                for (let i = 0; i < newSequence.length - 1; i++) {
+                    const from = newSequence[i];
+                    const to = newSequence[i + 1];
+                    const segment = reconstructPath(prevMap[from], from, to);
+                    constructedPath.push(...(i === 0 ? segment : segment.slice(1)));
+                }
+
+                allSteps.push({
+                    type: 'processing',
+                    visited: constructedPath,
+                    frontier:[],
+                    current: next,
+                    path: [],
+                    cost: newG
+                });
+
                 stack.push([next, newVisited, newSequence, newG]);
             }
         }
@@ -194,16 +209,23 @@ export default async function* idaTSP(boardData, delay = 200) {
         threshold = nextThreshold;
     }
 
+    // ✅ Từng bước cuối cùng: mô phỏng robot thật sự đi qua từng ô
+    if (finalPath.length > 0) {
+        for (let i = 0; i < finalPath.length; i++) {
+            const stepPath = finalPath.slice(0, i + 1);
+            allSteps.push({
+                type: 'processing',
+                visited: new Set(),
+                frontier: new Set(),
+                current: finalPath[i],
+                path: stepPath,
+                cost: i
+            });
+        }
+    }
+
     for (const step of allSteps) {
         yield step;
         await sleep(delay);
     }
-
-    // if (finalPath.length > 0) {
-    //     yield {
-    //         type: 'result',
-    //         path: finalPath,
-    //         message: 'Final TSP path covering all dirty points'
-    //     };
-    // }
 }
