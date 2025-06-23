@@ -71,8 +71,8 @@ export default function Board({
             </Switch>
             <LayerGroup
                 className='Board'
-                width={`${width}px`}
-                height={`${height}px`}
+                width={width}
+                height={height}
                 rows={rows}
                 cols={cols}
                 cellSize={cellSize}
@@ -94,6 +94,7 @@ export default function Board({
                     robot={state.robot}
                     pointerEvents={mode === Mode.SET_ROBOT}
                     animTime={mode === Mode.SOLVING ? 10 : 500}
+                    disabled={!rows || !cols}
                 />
                 <DirtsLayer
                     dirts={state.dirts}
