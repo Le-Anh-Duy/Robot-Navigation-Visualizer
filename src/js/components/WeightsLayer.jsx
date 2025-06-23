@@ -16,6 +16,7 @@ export default function WeightsLayer({ weights, width, height, rows, cols, disab
             ...props.style,
             width: width,
             height: height,
+            tableLayout: 'fixed',
             textAlign: 'center',
         }}>
             <tbody>

@@ -12,7 +12,6 @@ dirtImg.src = './dirt.svg'
  * @returns 
  */
 export default function DirtsLayer({ dirts, onChange, ctx, canvas, ...props }) {
-    console.log(dirts)
     const dirtsRef = useRef(new Map([...dirts].map(value => [value, undefined])))
 
     class Dirt {
