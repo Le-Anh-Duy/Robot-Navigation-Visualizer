@@ -15,12 +15,12 @@ export default function DirtsLayer({ dirts, onChange, ctx, canvas, ...props }) {
     const dirtsRef = useRef(new Map([...dirts].map(value => [value, undefined])))
 
     class Dirt {
-        constructor(x, y, padding = { top: 5, right: 5, bottom: 5, left: 5 }) {
+        constructor(x, y) {
             this.x = x
             this.y = y
-            this.padding = padding
-            this.width = canvas.cellSize - this.padding.left - this.padding.right
-            this.height = canvas.cellSize - this.padding.top - this.padding.bottom
+            this.padding = { top: canvas.cellSize / 8, right: canvas.cellSize / 8, bottom: canvas.cellSize / 8, left: canvas.cellSize / 8 }
+            this.width = canvas.cellSize * 3 / 4
+            this.height = canvas.cellSize * 3 / 4
             this.currentWidth = 0
             this.currentHeight = 0
             this.velocity = 0.5

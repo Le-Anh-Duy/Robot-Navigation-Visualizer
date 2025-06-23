@@ -14,7 +14,7 @@ import '../../styles/SolverForm.css'
  * @returns
  */
 export default function SolverForm({ mode = [], algorithms = [], heuristics = [],
-    minSpeed = 0, maxSpeed = 1000, onChange, onClickSolve, onClickCancelSolve, onClickResults
+    minSpeed = 1, maxSpeed = 1000, onChange, onClickSolve, onClickCancelSolve, onClickResults
 }) {
     const [data, setData] = useState({
         mode: '',

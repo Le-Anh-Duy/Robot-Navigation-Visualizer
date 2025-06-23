@@ -175,7 +175,7 @@ export default function App() {
 				<Board
 					rows={board.rows}
 					cols={board.cols}
-					cellSize={40}
+					cellSize={board.cols ? Math.min(40, 600 / board.cols) : 40}
 					value={board.data}
 					mode={mode}
 					step={step}

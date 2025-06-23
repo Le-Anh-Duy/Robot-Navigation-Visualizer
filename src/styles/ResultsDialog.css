@@ -1,12 +1,31 @@
 .ResultsDialog {
-    p {
+    position: relative;
+    display: flex;
+    gap: 20px;
+
+    div {
+        background-color: rgba(200, 200, 200, 1);
+        border-radius: 2px;
+        width: 2px;
+        height: 'auto';
+    }
+
+    >span {
         position: relative;
         font-weight: 500;
         color: rgba(0, 0, 0, 0.6);
+        width: 50%;
+        display: flex;
+        gap: 20px;
+        align-items: center;
+
+        >* {
+            flex: 1
+        }
 
         span {
-            position: absolute;
-            width: 40%;
+            /* position: absolute; */
+            width: 30%;
             right: 0;
             padding: 2px;
             text-align: center;
@@ -15,5 +34,6 @@
             background-color: rgba(255, 255, 255, 0.4);
             font-weight: 400;
         }
+
     }
 }

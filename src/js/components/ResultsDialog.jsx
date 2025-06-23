@@ -17,7 +17,7 @@ export default function ResultsDialog({ stepCount = 0, cost = 0, open, onClose, 
         <div draggable className='ResultsDialog' {...props} onClick={e => e.stopPropagation()} style={{
             position: 'absolute',
             backgroundColor: '#fff',
-            padding: '0px 20px',
+            padding: '10px 20px',
             borderRadius: '8px',
             minWidth: '300px',
             boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
@@ -27,14 +27,15 @@ export default function ResultsDialog({ stepCount = 0, cost = 0, open, onClose, 
             transition: 'all 0.3s ease',
         }}
         >
-            <p>
+            <span>
                 Step
                 <span style={{ color: stepColor }}>{stepCount}</span>
-            </p>
-            <p>
+            </span>
+            <div />
+            <span>
                 Cost
                 <span style={{ color: costColor }}>{cost}</span>
-            </p>
+            </span>
         </div>
     )
 }

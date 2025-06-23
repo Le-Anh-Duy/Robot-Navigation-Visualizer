@@ -19,12 +19,12 @@ export default function RobotLayer({ onChange, robot, ctx, canvas, animTime = 50
     }
 
     class Robot {
-        constructor(x, y, padding = { top: 5, right: 5, bottom: 5, left: 5 }) {
+        constructor(x, y) {
             this.x = x
             this.y = y
-            this.padding = padding
-            this.width = canvas.cellSize - this.padding.left - this.padding.right
-            this.height = canvas.cellSize - this.padding.top - this.padding.bottom
+            this.padding = { top: canvas.cellSize / 8, right: canvas.cellSize / 8, bottom: canvas.cellSize / 8, left: canvas.cellSize / 8 }
+            this.width = canvas.cellSize * 3 / 4
+            this.height = canvas.cellSize * 3 / 4
             this.velocity = { x: 0, y: 0 }
         }
 
@@ -101,8 +101,9 @@ export default function RobotLayer({ onChange, robot, ctx, canvas, animTime = 50
         id = requestAnimationFrame(anim)
     }, [ctx, canvas])
 
-    if (ctx && !robotRef.current)
+    useEffect(() => {
         robotRef.current = new Robot(0, 0)
+    }, [ctx, canvas.cellSize])
 
     return (
         <Layer

@@ -80,7 +80,6 @@ export default function SimulationLayer({ step, ctx, canvas, initRobot = 0, setR
             setRobot?.(step.path[i])
             if (dirts.current?.has(step.path[i])) {
                 dirts.current.delete(step.path[i])
-                console.log(dirts.current)
                 setDirts(new Set(dirts.current))
             }
             await sleep(animSpeed)
