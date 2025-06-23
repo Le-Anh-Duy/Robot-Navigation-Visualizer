@@ -7,6 +7,15 @@ import Mode from './js/constants/Mode';
 import alg from './ExampleAlg';
 import { flushSync } from 'react-dom';
 import ResultsDialog from './js/components/ResultsDialog';
+import generate from './js/algos/generate'
+import dfsAlgo from './js/algos/search-algos/dfs'
+import bfsAlgo from './js/algos/search-algos/bfs'
+import idaStarAlgo from './js/algos/search-algos/ida-star'
+import pas from './js/algos/search-algos/pas'
+import ucsAlgo from './js/algos/search-algos/ucs'
+import aStar from './js/algos/search-algos/astar'
+import iddfs from './js/algos/search-algos/iddfs'
+import beamSearch from './js/algos/search-algos/beam_search'
 
 const robotModeList = [
 	{ value: 'vacuum', text: 'Vacuum' },
@@ -15,8 +24,24 @@ const algorithms = [
 	{ value: 'bfs', text: 'Breadth-First-Search (BFS)' },
 	{ value: 'dfs', text: 'Depth-First-Search (DFS)' },
 	{ value: 'astar', text: 'A*' },
-	{ value: 'dijkstra', text: 'Dijkstra\'s Algorithm' },
+	{ value: 'ucs', text: 'Uniform-cost search' },
+	{ value: 'idastar', text: 'Iterative deepening A*' },
+	{ value: 'pas', text: 'Precomputation and Iterative Search' },
+	{ value: 'iddfs', text: 'Iterative deepening depth-first search' },
+	{ value: 'beamsearch', text: 'Beam Search' },
 ]
+
+const algoMap = new Map([
+	['bfs', bfsAlgo],
+	['dfs', dfsAlgo],
+	['astar', aStar],
+	['ucs', ucsAlgo],
+	['idastar', idaStarAlgo],
+	['pas', pas],
+	['iddfs', iddfs],
+	['beamsearch', beamSearch],
+]);
+
 const heuristics = [
 	{ value: '', text: '' },
 ]
@@ -71,10 +96,13 @@ export default function App() {
 			reader.readAsText(data.file)
 		}
 		else {
+
+			let nData = generate(data.rows, data.cols, 3, 1, 0);
+
 			setBoard(board => ({
 				rows: data.rows,
 				cols: data.cols,
-				data: board.data
+				data: nData
 			}))
 		}
 	}
@@ -90,64 +118,68 @@ export default function App() {
 	}
 
 	async function handleClickSolve(data) {
+		// console.log(data.algorithm);
+		// setMode(Mode.SOLVING);
+		console.log(data)
 		setSolverConfig(data)
 		setMode(Mode.SOLVING)
 		isSolving.current = true
 		setShowResults(true)
 
-		const res = alg(data, 1000)
-		for await (const step of res) {
-			if (!isSolving.current)
-				break
+		// Call solver function
 
+		const res = algoMap.get(data.algorithm)(board, data.speed);
+
+
+		for await (const step of res)
 			setStep(step)
-		}
 	}
+}
 
-	function handleClickCancelSolve() {
-		setMode(Mode.VIEW)
-		isSolving.current = false
-		setShowResults(false)
-	}
+function handleClickCancelSolve() {
+	setMode(Mode.VIEW)
+	isSolving.current = false
+	setShowResults(false)
+}
 
-	function handleClickResults() {
-	}
+function handleClickResults() {
+}
 
-	return (
-		<div className='App'>
-			<div className='controls'>
-				<ConfigForm
-					modeList={modeList}
-					onChangeMode={m => setMode(m)}
-					onSubmit={handleConfigFormSubmit}
-					onClickDownload={handleDownloadFile}
-					mode={mode}
-				/>
-				<SolverForm
-					mode={robotModeList}
-					algorithms={algorithms}
-					heuristics={heuristics}
-					onChange={setSolverConfig}
-					onClickSolve={handleClickSolve}
-					onClickCancelSolve={handleClickCancelSolve}
-					onClickResults={handleClickResults}
-				/>
-			</div>
-			<div className='board'>
-				<ResultsDialog open={showResults} onClose={() => { setShowResults(false) }} />
-				<Board
-					rows={board.rows}
-					cols={board.cols}
-					cellSize={40}
-					value={board.data}
-					mode={mode}
-					step={step}
-					animSpeed={solverConfig.speed}
-					onChange={data => {
-						setBoard(board => ({ ...board, data: data }))
-					}}
-				/>
-			</div>
+return (
+	<div className='App'>
+		<div className='controls'>
+			<ConfigForm
+				modeList={modeList}
+				onChangeMode={m => setMode(m)}
+				onSubmit={handleConfigFormSubmit}
+				onClickDownload={handleDownloadFile}
+				mode={mode}
+			/>
+			<SolverForm
+				mode={robotModeList}
+				algorithms={algorithms}
+				heuristics={heuristics}
+				onChange={setSolverConfig}
+				onClickSolve={handleClickSolve}
+				onClickCancelSolve={handleClickCancelSolve}
+				onClickResults={handleClickResults}
+			/>
 		</div>
-	)
+		<div className='board'>
+			<ResultsDialog open={showResults} onClose={() => { setShowResults(false) }} />
+			<Board
+				rows={board.rows}
+				cols={board.cols}
+				cellSize={40}
+				value={board.data}
+				mode={mode}
+				step={step}
+				animSpeed={solverConfig.speed}
+				onChange={data => {
+					setBoard(board => ({ ...board, data: data }))
+				}}
+			/>
+		</div>
+	</div>
+)
 }
