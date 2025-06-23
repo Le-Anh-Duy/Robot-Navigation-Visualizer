@@ -210,19 +210,19 @@ export default async function* idaTSP(boardData, delay = 200) {
     }
 
     // ✅ Từng bước cuối cùng: mô phỏng robot thật sự đi qua từng ô
-    if (finalPath.length > 0) {
-        for (let i = 0; i < finalPath.length; i++) {
-            const stepPath = finalPath.slice(0, i + 1);
-            allSteps.push({
-                type: 'processing',
-                visited: new Set(),
-                frontier: new Set(),
-                current: finalPath[i],
-                path: stepPath,
-                cost: i
-            });
-        }
-    }
+    // if (finalPath.length > 0) {
+    //     for (let i = 0; i < finalPath.length; i++) {
+    //         const stepPath = finalPath.slice(0, i + 1);
+    //         allSteps.push({
+    //             type: 'found',
+    //             visited: new Set(),
+    //             frontier: new Set(),
+    //             current: finalPath[i],
+    //             path: stepPath,
+    //             cost: i
+    //         });
+    //     }
+    // }
 
     for (const step of allSteps) {
         yield step;
