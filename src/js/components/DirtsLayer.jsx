@@ -69,7 +69,7 @@ export default function DirtsLayer({ dirts, onChange, ctx, canvas, ...props }) {
             }))
     }, [dirts])
 
-
+    var id
     useEffect(() => {
         if (!ctx)
             return
@@ -83,10 +83,13 @@ export default function DirtsLayer({ dirts, onChange, ctx, canvas, ...props }) {
             lastTime = currentTime
             update(deltaTime)
 
-            requestAnimationFrame(anim)
+            id = requestAnimationFrame(anim)
         }
 
-        requestAnimationFrame(anim)
+        if (id)
+            cancelAnimationFrame(id)
+
+        id = requestAnimationFrame(anim)
     }, [ctx, canvas])
 
     return (

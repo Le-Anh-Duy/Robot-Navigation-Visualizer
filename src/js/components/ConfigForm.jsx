@@ -11,7 +11,13 @@ import Mode from '../constants/Mode'
  * @returns 
  */
 export default function ConfigForm({ onSubmit, onClickDownload, onChangeMode, modeList, mode }) {
-    const [data, setData] = useState({ rows: 0, cols: 0, file: undefined })
+    const [data, setData] = useState({
+        rows: 0,
+        cols: 0,
+        file: undefined,
+        hasWeight: false,
+        acyclic: false
+    })
 
     return (
         <div className='ConfigForm'>
@@ -36,6 +42,16 @@ export default function ConfigForm({ onSubmit, onClickDownload, onChangeMode, mo
                         disabled={data.file !== undefined}
                         onChange={e => setData(data => ({ ...data, cols: Number(e.target.value) }))}
                     />
+                </div>
+                <div className='generator-option'>
+                    <label>
+                        <input type='checkbox' onChange={e => setData(data => ({ ...data, hasWeight: e.target.checked }))} />
+                        Has weight
+                    </label>
+                    <label>
+                        <input type='checkbox' onChange={e => setData(data => ({ ...data, acyclic: e.target.checked }))} />
+                        Acyclic
+                    </label>
                 </div>
                 <div className='select-file'>
                     <label htmlFor='terrain-file'>Load terrain from file (.json)</label>

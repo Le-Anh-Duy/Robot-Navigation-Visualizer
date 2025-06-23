@@ -28,6 +28,15 @@
         }
     }
 
+    .generator-option {
+        display: flex;
+
+        label {
+            flex: 1;
+            width: 50%;
+        }
+    }
+
     .select-file {
         label {
             text-align: left;

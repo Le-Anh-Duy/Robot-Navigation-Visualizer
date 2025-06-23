@@ -14,7 +14,7 @@ export default function ResultsDialog({ stepCount = 0, cost = 0, open, onClose, 
     }, [cost])
 
     return (
-        <div className='ResultsDialog' {...props} onClick={e => e.stopPropagation()} style={{
+        <div draggable className='ResultsDialog' {...props} onClick={e => e.stopPropagation()} style={{
             position: 'absolute',
             backgroundColor: '#fff',
             padding: '0px 20px',
@@ -23,7 +23,8 @@ export default function ResultsDialog({ stepCount = 0, cost = 0, open, onClose, 
             boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
             backgroundColor: 'rgb(201, 230, 255)',
             top: open ? '10px' : '-20%',
-            transition: 'top 0.3s ease',
+            opacity: open ? 1 : 0,
+            transition: 'all 0.3s ease',
         }}
         >
             <p>

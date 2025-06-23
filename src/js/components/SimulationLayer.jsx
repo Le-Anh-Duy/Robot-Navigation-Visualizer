@@ -15,6 +15,7 @@ export default function SimulationLayer({ step, ctx, canvas, initRobot = 0, setR
     const rows = canvas.rows, cols = canvas.cols, cellSize = canvas.cellSize
     const [len, setLen] = useState(0)
     const isSolving = useRef(false)
+    const dirts = useRef(initDirts)
 
     useEffect(() => {
         setRobot(initRobot)
@@ -75,9 +76,8 @@ export default function SimulationLayer({ step, ctx, canvas, initRobot = 0, setR
             ctx.fillRect(p.x, p.y, cellSize, cellSize)
             setRobot?.(step.path[i])
             if (initDirts?.has(step.path[i])) {
-                const newDirts = new Set(initDirts)
-                newDirts.delete(step.path[i])
-                setDirts(newDirts)
+                dirts.current.delete(step.path[i])
+                setDirts(dirts.current)
             }
             await sleep(animSpeed)
         }

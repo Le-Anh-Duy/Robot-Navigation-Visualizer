@@ -57,16 +57,18 @@ const modeList = [
 
 export default function App() {
 	const [mode, setMode] = useState(Mode.VIEW)
-	const [solverConfig, setSolverConfig] = useState(useState({
+	const [solverConfig, setSolverConfig] = useState({
 		mode: '',
-		algorithm: '',
+		algorithm: 'bfs',
 		heuristic: '',
 		speed: 50,
-	}))
+	})
 	const [board, setBoard] = useState({
 		rows: 0,
 		cols: 0,
 		data: undefined,
+		hasWeight: false,
+		acyclic: false,
 	})
 	const [step, setStep] = useState({
 		type: '',
@@ -78,6 +80,7 @@ export default function App() {
 	})
 	const isSolving = useRef(false)
 	const [showResults, setShowResults] = useState(false)
+	const [analysis, setAnalysis] = useState({ step: 0, cost: 0 })
 
 	function handleConfigFormSubmit(data) {
 		if (data.file) {
@@ -95,9 +98,8 @@ export default function App() {
 
 			reader.readAsText(data.file)
 		}
-		else {
-
-			let nData = generate(data.rows, data.cols, 3, 1, 0);
+		else if (data.rows && data.cols) {
+			let nData = generate(data.rows, data.cols, 3, data.hasWeight, data.acyclic);
 
 			setBoard(board => ({
 				rows: data.rows,
@@ -118,68 +120,71 @@ export default function App() {
 	}
 
 	async function handleClickSolve(data) {
-		// console.log(data.algorithm);
-		// setMode(Mode.SOLVING);
-		console.log(data)
 		setSolverConfig(data)
 		setMode(Mode.SOLVING)
 		isSolving.current = true
+		setAnalysis({ step: 0, cost: 0 })
 		setShowResults(true)
 
 		// Call solver function
-
 		const res = algoMap.get(data.algorithm)(board, data.speed);
 
+		for await (const step of res) {
+			if (!isSolving.current)
+				break
 
-		for await (const step of res)
 			setStep(step)
+			setAnalysis(a => ({ ...a, step: a.step + 1 }))
+			if (step.type === 'found')
+				setAnalysis(a => ({ ...a, cost: step.cost }))
+		}
 	}
-}
 
-function handleClickCancelSolve() {
-	setMode(Mode.VIEW)
-	isSolving.current = false
-	setShowResults(false)
-}
+	function handleClickCancelSolve() {
+		setMode(Mode.VIEW)
+		isSolving.current = false
+		setShowResults(false)
+	}
 
-function handleClickResults() {
-}
+	function handleClickResults() {
 
-return (
-	<div className='App'>
-		<div className='controls'>
-			<ConfigForm
-				modeList={modeList}
-				onChangeMode={m => setMode(m)}
-				onSubmit={handleConfigFormSubmit}
-				onClickDownload={handleDownloadFile}
-				mode={mode}
-			/>
-			<SolverForm
-				mode={robotModeList}
-				algorithms={algorithms}
-				heuristics={heuristics}
-				onChange={setSolverConfig}
-				onClickSolve={handleClickSolve}
-				onClickCancelSolve={handleClickCancelSolve}
-				onClickResults={handleClickResults}
-			/>
+	}
+
+	return (
+		<div className='App'>
+			<div className='controls'>
+				<ConfigForm
+					modeList={modeList}
+					onChangeMode={m => setMode(m)}
+					onSubmit={handleConfigFormSubmit}
+					onClickDownload={handleDownloadFile}
+					mode={mode}
+				/>
+				<SolverForm
+					mode={robotModeList}
+					algorithms={algorithms}
+					heuristics={heuristics}
+					onChange={setSolverConfig}
+					onClickSolve={handleClickSolve}
+					onClickCancelSolve={handleClickCancelSolve}
+					onClickResults={handleClickResults}
+				/>
+			</div>
+			<div className='board'>
+				<ResultsDialog stepCount={analysis.step} cost={analysis.cost} open={showResults} onClose={() => { setShowResults(false) }} />
+				<Board
+					rows={board.rows}
+					cols={board.cols}
+					cellSize={40}
+					value={board.data}
+					mode={mode}
+					step={step}
+					animSpeed={solverConfig.speed}
+					onChange={data => {
+						setBoard(board => ({ ...board, data: data }))
+					}}
+				/>
+			</div>
 		</div>
-		<div className='board'>
-			<ResultsDialog open={showResults} onClose={() => { setShowResults(false) }} />
-			<Board
-				rows={board.rows}
-				cols={board.cols}
-				cellSize={40}
-				value={board.data}
-				mode={mode}
-				step={step}
-				animSpeed={solverConfig.speed}
-				onChange={data => {
-					setBoard(board => ({ ...board, data: data }))
-				}}
-			/>
-		</div>
-	</div>
-)
+	)
 }

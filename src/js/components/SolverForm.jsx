@@ -18,7 +18,7 @@ export default function SolverForm({ mode = [], algorithms = [], heuristics = []
 }) {
     const [data, setData] = useState({
         mode: '',
-        algorithm: '',
+        algorithm: algorithms?.[0].value,
         heuristic: '',
         speed: 50,
     })
