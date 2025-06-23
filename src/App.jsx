@@ -6,6 +6,7 @@ import './styles/App.css'
 import Mode from './js/constants/Mode';
 import alg from './ExampleAlg';
 import { flushSync } from 'react-dom';
+import ResultsDialog from './js/components/ResultsDialog';
 
 const robotModeList = [
 	{ value: 'vacuum', text: 'Vacuum' },
@@ -51,6 +52,7 @@ export default function App() {
 		cost: 0,
 	})
 	const isSolving = useRef(false)
+	const [showResults, setShowResults] = useState(false)
 
 	function handleConfigFormSubmit(data) {
 		if (data.file) {
@@ -87,15 +89,12 @@ export default function App() {
 		URL.revokeObjectURL(url);
 	}
 
-	// Example for solving mode
-	// First, generate maze with size 10 x 10 (to match with example result)
-	// Then, click "Solve" button to invoke this function
 	async function handleClickSolve(data) {
 		setSolverConfig(data)
 		setMode(Mode.SOLVING)
 		isSolving.current = true
-		// data represent robot_mode, algorithm and heuristic
-		// Call solver function
+		setShowResults(true)
+
 		const res = alg(data, 1000)
 		for await (const step of res) {
 			if (!isSolving.current)
@@ -108,6 +107,10 @@ export default function App() {
 	function handleClickCancelSolve() {
 		setMode(Mode.VIEW)
 		isSolving.current = false
+		setShowResults(false)
+	}
+
+	function handleClickResults() {
 	}
 
 	return (
@@ -127,9 +130,11 @@ export default function App() {
 					onChange={setSolverConfig}
 					onClickSolve={handleClickSolve}
 					onClickCancelSolve={handleClickCancelSolve}
+					onClickResults={handleClickResults}
 				/>
 			</div>
 			<div className='board'>
+				<ResultsDialog open={showResults} onClose={() => { setShowResults(false) }} />
 				<Board
 					rows={board.rows}
 					cols={board.cols}

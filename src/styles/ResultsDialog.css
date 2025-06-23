@@ -1,0 +1,19 @@
+.ResultsDialog {
+    p {
+        position: relative;
+        font-weight: 500;
+        color: rgba(0, 0, 0, 0.6);
+
+        span {
+            position: absolute;
+            width: 40%;
+            right: 0;
+            padding: 2px;
+            text-align: center;
+            border: 2px inset rgba(0, 0, 0, 0.1);
+            border-radius: 2px;
+            background-color: rgba(255, 255, 255, 0.4);
+            font-weight: 400;
+        }
+    }
+}

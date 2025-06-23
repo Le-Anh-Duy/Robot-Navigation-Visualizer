@@ -10,11 +10,11 @@ import '../../styles/SolverForm.css'
  * @param {number} props.maxSpeed Maximum animation speed for simulate solving steps
  * @param {(data: { mode: string, algorithm: string, heuristic: string, speed: number }) => void} props.onChange Callback when change selection
  * @param {(data: { mode: string, algorithm: string, heuristic: string, speed: number }) => void} props.onClickSolve Callback when click "Solve" button
- * @param {() => void} props.onClickRanking Callback when click "See your ranking" button
+ * @param {() => void} props.onClickResults Callback when click "See result" button
  * @returns
  */
 export default function SolverForm({ mode = [], algorithms = [], heuristics = [],
-    minSpeed = 0, maxSpeed = 1000, onChange, onClickSolve, onClickCancelSolve, onClickRanking
+    minSpeed = 0, maxSpeed = 1000, onChange, onClickSolve, onClickCancelSolve, onClickResults
 }) {
     const [data, setData] = useState({
         mode: '',
@@ -53,12 +53,6 @@ export default function SolverForm({ mode = [], algorithms = [], heuristics = []
             <fieldset>
                 <legend>Solver</legend>
                 <div>
-                    <label htmlFor='mode'>Mode</label>
-                    <select id='mode'>
-                        {mode.map((e, i) => <option key={i} value={e.value}>{e.text}</option>)}
-                    </select>
-                </div>
-                <div>
                     <label htmlFor='algorithm'>Algorithm</label>
                     <select id='algorithm' onChange={handleAlgorithmChange}>
                         {algorithms.map((e, i) => <option key={i} value={e.value}>{e.text}</option>)}
@@ -95,7 +89,7 @@ export default function SolverForm({ mode = [], algorithms = [], heuristics = []
                     }}>
                         {isSolving ? 'Cancel' : 'Solve'}
                     </button>
-                    <button onClick={onClickRanking}>See your ranking</button>
+                    <button onClick={onClickResults}>See results</button>
                 </div>
             </fieldset>
         </div>

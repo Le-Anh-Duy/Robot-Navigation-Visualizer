@@ -1,5 +1,6 @@
 .App {
 	display: flex;
+	position: relative;
 	flex-direction: row;
 	align-items: start;
 	gap: 20px;
