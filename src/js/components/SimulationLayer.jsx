@@ -17,10 +17,13 @@ export default function SimulationLayer({ step, ctx, canvas, initRobot = 0, setR
     const isSolving = useRef(false)
     const dirts = useRef(initDirts)
 
+    useEffect(() => { dirts.current = new Set(initDirts) }, [initDirts])
+
     useEffect(() => {
         setRobot(initRobot)
         setDirts(initDirts)
         isSolving.current = !props.disabled
+        dirts.current = new Set(initDirts)
     }, [props.disabled])
 
     function update(deltaTime) {
@@ -75,9 +78,10 @@ export default function SimulationLayer({ step, ctx, canvas, initRobot = 0, setR
             const p = canvas.indexToCellCoord(step.path[i])
             ctx.fillRect(p.x, p.y, cellSize, cellSize)
             setRobot?.(step.path[i])
-            if (initDirts?.has(step.path[i])) {
+            if (dirts.current?.has(step.path[i])) {
                 dirts.current.delete(step.path[i])
-                setDirts(dirts.current)
+                console.log(dirts.current)
+                setDirts(new Set(dirts.current))
             }
             await sleep(animSpeed)
         }

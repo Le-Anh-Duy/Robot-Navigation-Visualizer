@@ -58,8 +58,6 @@ export default function Board({
             setState(value)
         else
             onChange?.(state)
-
-        console.log('abc')
     }, [value])
 
     return (
